@@ -223,3 +223,41 @@ import { AppComponent } from './app/app.component';
 
 bootstrapApplication(AppComponent)
   .catch(err => console.error(err));
+
+
+
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
+@Component({
+  selector: 'app-root',
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    BrowserAnimationsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule
+  ],
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+  username = '';
+  password = '';
+
+  login() {
+    console.log('Username:', this.username);
+    console.log('Password:', this.password);
+  }
+
+  loginSSO() {
+    console.log('Login with SSO');
+  }
+}
