@@ -336,16 +336,38 @@ export class AppComponent {
 }
 
 app.component.html
-<!-- Sample Login Box -->
-<div class="login-box">
-  <mat-form-field>
-    <input matInput placeholder="Username">
-  </mat-form-field>
+<div class="container">
+  <div class="header" [ngClass]="{ 'move-up': true }">
+    <img src="assets/bnp-logo.png" alt="BNP Logo" class="logo" />
+    <h1 class="title">NextGen-Recon</h1>
+  </div>
 
-  <mat-form-field>
-    <input matInput placeholder="Password" type="password">
-  </mat-form-field>
+  <div class="box-row">
+    <!-- Box 1: Info -->
+    <div class="box info-box">
+      <h2>About NextGen-Recon</h2>
+      <p>This platform transforms reconciliation with intelligent automation and intuitive insights.</p>
+    </div>
 
-  <button mat-raised-button color="primary">Submit</button>
-  <button mat-button>Login with SSO</button>
+    <!-- Box 2: Video Tutorials -->
+    <div class="box tutorial-box">
+      <h2>Video Tutorials</h2>
+      <div class="mini-box" *ngFor="let vid of [1,2,3,4]">Tutorial {{vid}}</div>
+    </div>
+
+    <!-- Box 3: Login -->
+    <div class="box login-box">
+      <h2>Login</h2>
+      <mat-form-field appearance="outline">
+        <input matInput placeholder="Username" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <input matInput placeholder="Password" type="password" />
+      </mat-form-field>
+
+      <button mat-raised-button color="primary" class="login-button">Submit</button>
+      <button mat-stroked-button color="accent" class="sso-button">Login with SSO</button>
+    </div>
+  </div>
 </div>
