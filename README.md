@@ -373,88 +373,6 @@ app.component.html
 </div>
 
 
-app.component.css
-
-/* Global Theme */
-:host {
-  display: block;
-  background-color: #e8f5e9; /* Light green */
-  font-family: 'Segoe UI', sans-serif;
-  color: #2e7d32;
-  height: 100vh;
-  padding: 20px;
-}
-
-/* Header animation */
-.header {
-  text-align: center;
-  margin-bottom: 20px;
-  animation: slideUp 2s ease forwards;
-}
-
-.logo {
-  width: 60px;
-  height: 60px;
-  vertical-align: middle;
-}
-
-.title {
-  display: inline-block;
-  font-size: 2.5rem;
-  margin-left: 10px;
-  vertical-align: middle;
-}
-
-@keyframes slideUp {
-  0% {
-    transform: translateY(100px);
-    opacity: 0;
-  }
-  100% {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-/* Layout */
-.box-row {
-  display: flex;
-  justify-content: space-around;
-  align-items: flex-start;
-  gap: 20px;
-  margin-top: 30px;
-  flex-wrap: wrap;
-}
-
-.box {
-  background-color: white;
-  border-radius: 12px;
-  padding: 20px;
-  box-shadow: 0 0 10px #c8e6c9;
-  width: 300px;
-  min-height: 200px;
-}
-
-/* Tutorials */
-.tutorial-box .mini-box {
-  background-color: #a5d6a7;
-  padding: 10px;
-  margin: 8px 0;
-  border-radius: 8px;
-  text-align: center;
-}
-
-/* Login */
-.login-box mat-form-field {
-  display: block;
-  width: 100%;
-  margin-bottom: 15px;
-}
-
-.login-button, .sso-button {
-  width: 100%;
-  margin-bottom: 10px;
-}
 
 
 
@@ -471,3 +389,101 @@ bootstrapApplication(AppComponent, {
     importProvidersFrom(HttpClientModule)
   ]
 });
+
+/* Global Theme */
+:host {
+  display: block;
+  background-color: #e0f2f1; /* soft mint green */
+  font-family: 'Segoe UI', sans-serif;
+  color: #004d40; /* deep green (BNP-like) */
+  height: 100vh;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* Header */
+.header {
+  text-align: center;
+  margin-bottom: 40px;
+  animation: slideUp 1.5s ease forwards;
+}
+
+.logo {
+  width: 60px;
+  height: 60px;
+  vertical-align: middle;
+}
+
+.title {
+  display: inline-block;
+  font-size: 2.5rem;
+  margin-left: 15px;
+  vertical-align: middle;
+  color: #00695c;
+}
+
+/* Animation */
+@keyframes slideUp {
+  0% {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Layout */
+.box-row {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+.box {
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 25px;
+  box-shadow: 0 6px 15px rgba(0, 77, 64, 0.1);
+  width: 320px;
+  min-height: 250px;
+  transition: transform 0.3s;
+}
+
+.box:hover {
+  transform: translateY(-5px);
+}
+
+/* Tutorials */
+.tutorial-box .mini-box {
+  background-color: #b2dfdb;
+  padding: 12px;
+  margin: 10px 0;
+  border-radius: 8px;
+  text-align: center;
+  font-weight: 500;
+  color: #004d40;
+}
+
+/* Login */
+.login-box mat-form-field {
+  display: block;
+  width: 100%;
+  margin-bottom: 18px;
+}
+
+.login-button {
+  background-color: #004d40 !important;
+  color: white !important;
+  width: 100%;
+  margin-bottom: 12px;
+}
+
+.sso-button {
+  border-color: #004d40 !important;
+  color: #004d40 !important;
+  width: 100%;
+}
