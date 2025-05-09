@@ -263,3 +263,10 @@ Visit: http://localhost:4200
 
 
 
+
+
+
+
+npm install primeng@^16.0.0 primeicons@^6.0.0 --legacy-peer-deps
+npm install ag-grid-angular@^31.0.0 ag-grid-community@^31.0.0 --legacy-peer-deps
+npm install @angular/material@^17.0.0 @angular/cdk@^17.0.0 --legacy-peer-deps
