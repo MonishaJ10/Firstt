@@ -335,155 +335,186 @@ export class AppComponent {
   title = 'NextGen-Recon';
 }
 
-app.component.html
+%;
+}
+
+app.comp.html
 <div class="container">
-  <div class="header" [ngClass]="{ 'move-up': true }">
+  <!-- Header -->
+  <div class="header">
     <img src="assets/bnp-logo.png" alt="BNP Logo" class="logo" />
-    <h1 class="title">NextGen-Recon</h1>
+    <h1 class="title">NextGen Recon</h1>
   </div>
 
-  <div class="box-row">
-    <!-- Box 1: Info -->
-    <div class="box info-box">
-      <h2>About NextGen-Recon</h2>
-      <p>This platform transforms reconciliation with intelligent automation and intuitive insights.</p>
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Left Side Boxes -->
+    <div class="left-column">
+      <div class="content-box">Hyperlinks</div>
+      <div class="content-box">Content / Hyperlinks</div>
     </div>
 
-    <!-- Box 2: Video Tutorials -->
-    <div class="box tutorial-box">
-      <h2>Video Tutorials</h2>
-      <div class="mini-box" *ngFor="let vid of [1,2,3,4]">Tutorial {{vid}}</div>
-    </div>
-
-    <!-- Box 3: Login -->
-    <div class="box login-box">
+    <!-- Login Box -->
+    <div class="login-box">
       <h2>Login</h2>
-      <mat-form-field appearance="outline">
-        <input matInput placeholder="Username" />
-      </mat-form-field>
+      <p class="subhead">Reconciliation</p>
+      <p class="subhead">Trade Matching</p>
 
-      <mat-form-field appearance="outline">
-        <input matInput placeholder="Password" type="password" />
-      </mat-form-field>
+      <form (ngSubmit)="onSubmit()" #loginForm="ngForm" novalidate>
+        <mat-form-field appearance="fill">
+          <input matInput placeholder="UID" name="uid" [(ngModel)]="uid" required />
+        </mat-form-field>
+        <div *ngIf="showUidError" class="error-msg">Enter your UID</div>
 
-      <button mat-raised-button color="primary" class="login-button">Submit</button>
-      <button mat-stroked-button color="accent" class="sso-button">Login with SSO</button>
+        <mat-form-field appearance="fill">
+          <input matInput type="password" placeholder="Password" name="password" [(ngModel)]="password" required />
+        </mat-form-field>
+
+        <button mat-raised-button color="primary" class="login-button" type="submit">Submit</button>
+        <div class="or-line">or</div>
+        <button mat-stroked-button color="accent" class="sso-button">Login with SSO</button>
+      </form>
     </div>
   </div>
 </div>
 
-
-
-
-
-
-import { bootstrapApplication } from '@angular/platform-browser';
-import { AppComponent } from './app/app.component';
-import { importProvidersFrom } from '@angular/core';
-import { provideAnimations } from '@angular/platform-browser/animations';
-import { HttpClientModule } from '@angular/common/http';
-
-bootstrapApplication(AppComponent, {
-  providers: [
-    provideAnimations(),
-    importProvidersFrom(HttpClientModule)
-  ]
-});
-
-/* Global Theme */
+app.comp.css
 :host {
   display: block;
-  background-color: #e0f2f1; /* soft mint green */
+  background: #f4fef6;
   font-family: 'Segoe UI', sans-serif;
-  color: #004d40; /* deep green (BNP-like) */
-  height: 100vh;
-  padding: 20px;
-  box-sizing: border-box;
+  padding: 30px;
 }
 
 /* Header */
 .header {
-  text-align: center;
-  margin-bottom: 40px;
-  animation: slideUp 1.5s ease forwards;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 30px;
 }
 
 .logo {
-  width: 60px;
-  height: 60px;
-  vertical-align: middle;
+  width: 50px;
+  height: 50px;
 }
 
 .title {
-  display: inline-block;
-  font-size: 2.5rem;
-  margin-left: 15px;
-  vertical-align: middle;
-  color: #00695c;
+  font-size: 2rem;
+  font-weight: bold;
+  color: #2e7d32;
 }
 
-/* Animation */
-@keyframes slideUp {
-  0% {
-    transform: translateY(50px);
-    opacity: 0;
-  }
-  100% {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-/* Layout */
-.box-row {
+/* Main Layout */
+.main-content {
   display: flex;
-  justify-content: center;
-  align-items: stretch;
-  gap: 30px;
+  justify-content: space-between;
   flex-wrap: wrap;
 }
 
-.box {
-  background-color: #ffffff;
-  border-radius: 16px;
-  padding: 25px;
-  box-shadow: 0 6px 15px rgba(0, 77, 64, 0.1);
+.left-column {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  flex: 1;
+  max-width: 600px;
+}
+
+.content-box {
+  background: #ffecec;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  font-size: 1.1rem;
+  transition: all 0.3s;
+}
+
+.content-box:hover {
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* Login Box */
+.login-box {
   width: 320px;
-  min-height: 250px;
-  transition: transform 0.3s;
+  background: linear-gradient(to bottom, #2e7d32, #1b5e20);
+  color: white;
+  padding: 25px;
+  border-radius: 20px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
 }
 
-.box:hover {
-  transform: translateY(-5px);
-}
-
-/* Tutorials */
-.tutorial-box .mini-box {
-  background-color: #b2dfdb;
-  padding: 12px;
-  margin: 10px 0;
-  border-radius: 8px;
+.login-box h2 {
   text-align: center;
-  font-weight: 500;
-  color: #004d40;
+  margin-bottom: 10px;
 }
 
-/* Login */
-.login-box mat-form-field {
-  display: block;
+.subhead {
+  text-align: center;
+  font-size: 0.9rem;
+  margin-bottom: 10px;
+  opacity: 0.85;
+}
+
+/* Input & Buttons */
+mat-form-field {
   width: 100%;
-  margin-bottom: 18px;
+  background-color: white;
+  border-radius: 4px;
+  margin-bottom: 10px;
 }
 
-.login-button {
-  background-color: #004d40 !important;
-  color: white !important;
-  width: 100%;
-  margin-bottom: 12px;
+input {
+  color: black;
 }
 
+.login-button,
 .sso-button {
-  border-color: #004d40 !important;
-  color: #004d40 !important;
   width: 100%;
+  font-weight: bold;
+  margin-top: 10px;
+  border-radius: 6px;
+}
+
+.login-button:hover,
+.sso-button:hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.3);
+}
+
+/* Error Message */
+.error-msg {
+  color: red;
+  font-size: 0.9rem;
+  margin-top: -8px;
+  margin-bottom: 10px;
+}
+
+.or-line {
+  text-align: center;
+  margin: 10px 0;
+  font-size: 0.85rem;
+  color: #ccc;
+}
+
+app.comp.ts
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+  standalone: true,
+  imports: []
+})
+export class AppComponent {
+  uid: string = '';
+  password: string = '';
+  showUidError = false;
+
+  onSubmit() {
+    this.showUidError = this.uid.trim() === '';
+    if (!this.showUidError) {
+      alert('Form submitted!');
+    }
+  }
 }
