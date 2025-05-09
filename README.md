@@ -371,3 +371,87 @@ app.component.html
     </div>
   </div>
 </div>
+
+
+app.component.css
+
+/* Global Theme */
+:host {
+  display: block;
+  background-color: #e8f5e9; /* Light green */
+  font-family: 'Segoe UI', sans-serif;
+  color: #2e7d32;
+  height: 100vh;
+  padding: 20px;
+}
+
+/* Header animation */
+.header {
+  text-align: center;
+  margin-bottom: 20px;
+  animation: slideUp 2s ease forwards;
+}
+
+.logo {
+  width: 60px;
+  height: 60px;
+  vertical-align: middle;
+}
+
+.title {
+  display: inline-block;
+  font-size: 2.5rem;
+  margin-left: 10px;
+  vertical-align: middle;
+}
+
+@keyframes slideUp {
+  0% {
+    transform: translateY(100px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Layout */
+.box-row {
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-start;
+  gap: 20px;
+  margin-top: 30px;
+  flex-wrap: wrap;
+}
+
+.box {
+  background-color: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 0 10px #c8e6c9;
+  width: 300px;
+  min-height: 200px;
+}
+
+/* Tutorials */
+.tutorial-box .mini-box {
+  background-color: #a5d6a7;
+  padding: 10px;
+  margin: 8px 0;
+  border-radius: 8px;
+  text-align: center;
+}
+
+/* Login */
+.login-box mat-form-field {
+  display: block;
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+.login-button, .sso-button {
+  width: 100%;
+  margin-bottom: 10px;
+}
