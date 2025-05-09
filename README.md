@@ -270,3 +270,27 @@ Visit: http://localhost:4200
 npm install primeng@^16.0.0 primeicons@^6.0.0 --legacy-peer-deps
 npm install ag-grid-angular@^31.0.0 ag-grid-community@^31.0.0 --legacy-peer-deps
 npm install @angular/material@^17.0.0 @angular/cdk@^17.0.0 --legacy-peer-deps
+
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { PrimeIconsModule } from 'primeng/api';
+import { PanelModule } from 'primeng/panel';
+
+@NgModule({
+  declarations: [...],
+  imports: [
+    BrowserModule,
+    BrowserAnimationsModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatInputModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    PanelModule
+  ],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
