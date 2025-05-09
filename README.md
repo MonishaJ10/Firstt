@@ -530,3 +530,24 @@ export class AppComponent {
     }
   }
 }
+
+
+
+
+<div class="box login-box">
+  <h2>Login</h2>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Username</mat-label>
+    <input matInput placeholder="Username" [(ngModel)]="username" required />
+    <mat-hint class="uid-hint">Enter your UID</mat-hint>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Password</mat-label>
+    <input matInput placeholder="Password" type="password" [(ngModel)]="password" required />
+  </mat-form-field>
+
+  <button mat-raised-button color="primary" class="login-button">Login</button>
+  <button mat-stroked-button color="accent" class="sso-button">Login with SSO</button>
+</div>
