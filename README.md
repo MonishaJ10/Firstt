@@ -334,3 +334,18 @@ import { PanelModule } from 'primeng/panel';
 export class AppComponent {
   title = 'NextGen-Recon';
 }
+
+app.component.html
+<!-- Sample Login Box -->
+<div class="login-box">
+  <mat-form-field>
+    <input matInput placeholder="Username">
+  </mat-form-field>
+
+  <mat-form-field>
+    <input matInput placeholder="Password" type="password">
+  </mat-form-field>
+
+  <button mat-raised-button color="primary">Submit</button>
+  <button mat-button>Login with SSO</button>
+</div>
