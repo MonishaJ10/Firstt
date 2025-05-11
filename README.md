@@ -249,5 +249,35 @@ login.comp.css
   font-size: 0.8rem;
   letter-spacing:
 ::contentReference[oaicite:31]{index=31}
+
+
+app.comp.css
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+header, footer {
+  background-color: #2f855a; /* Your green bar */
+  color: white;
+  padding: 1rem;
+}
+
+main {
+  flex: 1; /* Take up remaining vertical space */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  box-sizing: border-box;
+}
+
  
 
