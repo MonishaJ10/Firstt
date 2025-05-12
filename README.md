@@ -431,3 +431,117 @@ sidebar.comp.css
   }
 }
 
+
+ts
+import { Component } from '@angular/core';
+import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { RippleModule } from 'primeng/ripple';
+
+@Component({
+  selector: 'app-sidebar',
+  standalone: true,
+  imports: [CommonModule, RippleModule],
+  templateUrl: './sidebar.component.html',
+  styleUrls: ['./sidebar.component.css']
+})
+export class SidebarComponent {
+  constructor(private router: Router) {}
+
+  navigateToPath(path: string): void {
+    this.router.navigateByUrl(path);
+  }
+}
+
+html
+<div class="static-sidebar">
+  <div class="sidebar-header">
+    <span class="app-title">Recon NextGen</span>
+  </div>
+
+  <div class="sidebar-content">
+    <ul class="sidebar-menu">
+      <li (click)="navigateToPath('home')" pRipple>Home</li>
+      <li (click)="navigateToPath('match')" pRipple>Matching</li>
+      <li (click)="navigateToPath('dragmatch')" pRipple>Drag Match</li>
+      <li class="dropdown">
+        <div class="dropdown-toggle" pRipple>
+          Reports <i class="pi pi-chevron-down ml-auto"></i>
+        </div>
+        <ul class="dropdown-menu">
+          <li pRipple>Sub Report 1</li>
+          <li pRipple>Sub Report 2</li>
+        </ul>
+      </li>
+      <li (click)="navigateToPath('exclusion')" pRipple>Exclusion Rules</li>
+      <li pRipple>Updation Rules</li>
+      <li pRipple>Summary</li>
+    </ul>
+  </div>
+</div>
+
+cse
+.static-sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 15rem;
+  background: #1f2937;
+  color: white;
+  padding: 1rem;
+  z-index: 1000;
+  overflow-y: auto;
+}
+
+.sidebar-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.app-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #0ea5e9;
+}
+
+.sidebar-content {
+  height: calc(100% - 3rem);
+}
+
+.sidebar-menu {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar-menu li {
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  border-radius: 0.5rem;
+  transition: background 0.2s;
+}
+
+.sidebar-menu li:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.dropdown-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+}
+
+.dropdown-menu {
+  list-style: none;
+  margin-left: 1rem;
+  padding: 0.5rem 0;
+  display: none;
+}
+
+.dropdown:hover .dropdown-menu {
+  display: block;
+}
