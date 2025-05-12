@@ -481,17 +481,19 @@ html
 </div>
 
 cse
+/* [Green and white theme applied below] */
 .static-sidebar {
   position: fixed;
   top: 0;
   left: 0;
   height: 100vh;
   width: 15rem;
-  background: #1f2937;
-  color: white;
+  background: #ffffff; /* [Changed from dark to white background] */
+  color: #2e7d32; /* [Green text] */
   padding: 1rem;
   z-index: 1000;
   overflow-y: auto;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1); /* [Optional visual separation] */
 }
 
 .sidebar-header {
@@ -504,7 +506,7 @@ cse
 .app-title {
   font-size: 1.5rem;
   font-weight: bold;
-  color: #0ea5e9;
+  color: #2e7d32; /* [Changed title to green] */
 }
 
 .sidebar-content {
@@ -521,10 +523,11 @@ cse
   cursor: pointer;
   border-radius: 0.5rem;
   transition: background 0.2s;
+  color: #2e7d32; /* [Green menu items] */
 }
 
 .sidebar-menu li:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: #e8f5e9; /* [Light green hover] */
 }
 
 .dropdown-toggle {
@@ -533,6 +536,7 @@ cse
   justify-content: space-between;
   padding: 0.75rem 1rem;
   cursor: pointer;
+  color: #2e7d32; /* [Green dropdown toggle] */
 }
 
 .dropdown-menu {
@@ -540,8 +544,28 @@ cse
   margin-left: 1rem;
   padding: 0.5rem 0;
   display: none;
+  animation: dropdown-slide 0.3s ease-in-out forwards;
 }
 
 .dropdown:hover .dropdown-menu {
   display: block;
+}
+
+.dropdown-menu li {
+  color: #2e7d32; /* [Green subitems] */
+}
+
+.dropdown-menu li:hover {
+  background-color: #f1f8e9; /* [Softer green hover] */
+}
+
+@keyframes dropdown-slide {
+  0% {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
