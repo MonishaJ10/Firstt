@@ -251,3 +251,183 @@ login.comp.css
 }
  
 
+
+sidebar.comp.ts
+import { Component, ViewChild, inject } from '@angular/core';
+import { Sidebar } from 'primeng/sidebar';
+import { Router } from '@angular/router';
+
+import { CommonModule } from '@angular/common';
+import { SidebarModule } from 'primeng/sidebar';
+import { ButtonModule } from 'primeng/button';
+import { RippleModule } from 'primeng/ripple';
+import { AvatarModule } from 'primeng/avatar';
+import { StyleClassModule } from 'primeng/styleclass';
+
+@Component({
+  selector: 'app-sidebar',
+  standalone: true,
+  imports: [
+    CommonModule,
+    SidebarModule,
+    ButtonModule,
+    RippleModule,
+    AvatarModule,
+    StyleClassModule
+  ],
+  templateUrl: './sidebar.component.html',
+  styleUrls: ['./sidebar.component.css']
+})
+export class SidebarComponent {
+  router = inject(Router);
+  sidebarVisible = false;
+
+  @ViewChild('sidebarRef') sidebarRef!: Sidebar;
+
+  closeCallback(e: any): void {
+    this.sidebarRef.close(e);
+  }
+
+  navigateToPath(path: string): void {
+    this.router.navigateByUrl(path);
+  }
+}
+
+sidebar.comp.html
+<div class="container">
+  <div class="card flex justify-content-center">
+    <p-sidebar #sidebarRef [(visible)]="sidebarVisible" [modal]="true" position="left" showCloseIcon="false" styleClass="custom-sidebar" baseZIndex="10000">
+      <ng-template pTemplate="headless">
+        <div class="sidebar-header">
+          <span class="app-title">Recon NextGen</span>
+          <button pButton icon="pi pi-times" (click)="closeCallback($event)" class="p-button-rounded p-button-text close-btn"></button>
+        </div>
+
+        <div class="sidebar-content">
+          <ul class="sidebar-menu">
+            <li (click)="navigateToPath('home')" pRipple>Home</li>
+            <li (click)="navigateToPath('match')" pRipple>Matching</li>
+            <li (click)="navigateToPath('dragmatch')" pRipple>Drag Match</li>
+            <li class="dropdown">
+              <div class="dropdown-toggle" pRipple>
+                Reports <i class="pi pi-chevron-down ml-auto"></i>
+              </div>
+              <ul class="dropdown-menu">
+                <li pRipple>Sub Report 1</li>
+                <li pRipple>Sub Report 2</li>
+              </ul>
+            </li>
+            <li (click)="navigateToPath('exclusion')" pRipple>Exclusion Rules</li>
+            <li pRipple>Updation Rules</li>
+            <li pRipple>Summary</li>
+          </ul>
+        </div>
+      </ng-template>
+    </p-sidebar>
+
+    <button pButton icon="pi pi-bars" (click)="sidebarVisible = true" class="sidebar-toggle-button hello"></button>
+  </div>
+</div>
+
+sidebar.comp.css
+.container {
+  position: fixed;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  z-index: 2000;
+}
+
+.custom-sidebar {
+  width: 15rem !important;
+  background: #1f2937;
+  color: white;
+  padding: 1rem;
+  transition: all 0.3s ease;
+}
+
+.sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.app-title {
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: #0ea5e9;
+}
+
+.close-btn {
+  background: transparent;
+  color: white;
+}
+
+.sidebar-content {
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.sidebar-menu {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar-menu li {
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  border-radius: 0.5rem;
+  transition: background 0.2s;
+}
+
+.sidebar-menu li:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.dropdown-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+}
+
+.dropdown-menu {
+  list-style: none;
+  margin-left: 1rem;
+  padding: 0.5rem 0;
+  display: none;
+  animation: dropdown-slide 0.3s ease-in-out forwards;
+}
+
+.dropdown:hover .dropdown-menu {
+  display: block;
+}
+
+.sidebar-toggle-button.hello {
+  background-color: #0ea5e9 !important;
+  color: white !important;
+  border: none;
+  border-radius: 50%;
+  width: 3rem;
+  height: 3rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease;
+}
+
+.sidebar-toggle-button.hello:hover {
+  transform: scale(1.1);
+}
+
+@keyframes dropdown-slide {
+  0% {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
