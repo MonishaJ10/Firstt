@@ -569,3 +569,97 @@ cse
     transform: translateY(0);
   }
 }
+
+
+-----------------
+
+DesisParserApplication.java
+
+package com.example.desisparser;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class DesisParserApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(DesisParserApplication.class, args);
+    }
+}
+
+
+---
+
+2. ParserController.java (inside controller package)
+
+package com.example.desisparser.controller;
+
+import com.example.desisparser.service.DesisParserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
+
+@RestController
+@RequestMapping("/api/parse")
+public class ParserController {
+
+    @Autowired
+    private DesisParserService desisParserService;
+
+    @PostMapping
+    public String parseDesisFile(@RequestBody String desisContent) {
+        return desisParserService.parseToCsv(desisContent);
+    }
+}
+
+
+---
+
+3. DesisParserService.java (inside service package)
+
+package com.example.desisparser.service;
+
+import org.springframework.stereotype.Service;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+@Service
+public class DesisParserService {
+
+    public String parseToCsv(String desis) {
+        Map<String, String> parsedData = new LinkedHashMap<>();
+
+        // Split on * and space
+        String[] parts = desis.split("[*\\s]+");
+
+        for (String part : parts) {
+            if (part.contains(":")) {
+                int colonIndex = part.indexOf(":");
+                String key = part.substring(0, colonIndex).trim();
+                String value = part.substring(colonIndex + 1).trim();
+                parsedData.put(key, value);
+            }
+        }
+
+        // Build CSV
+        StringBuilder csv = new StringBuilder();
+        // Header row
+        parsedData.keySet().forEach(key -> csv.append(key).append(","));
+        csv.setLength(csv.length() - 1); // remove last comma
+        csv.append("\n");
+
+        // Value row
+        parsedData.values().forEach(value -> csv.append(value).append(","));
+        csv.setLength(csv.length() - 1); // remove last comma
+
+        return csv.toString();
+    }
+}
+
+
+---
+
+4. application.properties
+
+server.port=8080
