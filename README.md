@@ -663,3 +663,23 @@ public class DesisParserService {
 4. application.properties
 
 server.port=8080
+
+
+package com.example.controller;
+
+import com.example.service.DesisParserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/api/parser")
+public class ParserController {
+
+    @Autowired
+    private DesisParserService desisParserService;
+
+    @PostMapping
+    public String parseDesisFile(@RequestBody String desisContent) {
+        return desisParserService.parseToCsv(desisContent);
+    }
+}
