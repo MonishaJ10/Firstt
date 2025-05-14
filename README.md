@@ -798,3 +798,103 @@ public class DesisParserApplication {
         SpringApplication.run(DesisParserApplication.class, args);
     }
 }
+
+
+
+
+
+1. Create Controller
+
+Create a new Java class:
+
+> src/main/java/com/example/desisparser/controller/DesisController.java
+
+
+
+package com.example.desisparser.controller;
+
+import com.example.desisparser.service.DesisService;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
+
+@RestController
+@RequestMapping("/api/desis")
+public class DesisController {
+
+    @Autowired
+    private DesisService desisService;
+
+    @PostMapping("/parse")
+    public void parseDesisData(@RequestBody String desisData, HttpServletResponse response) throws IOException {
+        desisService.processDesisToCSV(desisData, response);
+    }
+}
+
+
+---
+
+2. Create Service
+
+> src/main/java/com/example/desisparser/service/DesisService.java
+
+
+
+package com.example.desisparser.service;
+
+import org.springframework.stereotype.Service;
+
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.PrintWriter;
+import java.util.LinkedHashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+@Service
+public class DesisService {
+
+    public void processDesisToCSV(String desisData, HttpServletResponse response) throws java.io.IOException {
+        LinkedHashMap<String, String> csvData = new LinkedHashMap<>();
+
+        // Extract header parts
+        String typeNature = desisData.substring(0, 2);
+        String siteCode = desisData.substring(2, 6);
+        String appCode = extractAlpha(desisData.substring(6)).split("[0-9]")[0];
+        String rem = desisData.substring(6 + appCode.length());
+        String instrumentCode = extractAlpha(rem).split("[0-9]")[0];
+        String remainingData = rem.substring(instrumentCode.length());
+
+        csvData.put("type_nature", typeNature);
+        csvData.put("site_code", siteCode);
+        csvData.put("application_code", appCode);
+        csvData.put("instrument_code", instrumentCode);
+
+        // Extract remaining key:value pairs using regex
+        Pattern pattern = Pattern.compile("(\\d+):([^\\s*]+)");
+        Matcher matcher = pattern.matcher(remainingData);
+
+        while (matcher.find()) {
+            csvData.put(matcher.group(1), matcher.group(2));
+        }
+
+        // Prepare response for CSV download
+        response.setContentType("text/csv");
+        response.setHeader("Content-Disposition", "attachment; filename=\"parsed_output.csv\"");
+        PrintWriter writer = response.getWriter();
+
+        // Write CSV header
+        writer.println(String.join(",", csvData.keySet()));
+
+        // Write CSV values
+        writer.println(String.join(",", csvData.values()));
+
+        writer.flush();
+        writer.close();
+    }
+
+    private String extractAlpha(String input) {
+        return input.replaceAll("[^A-Za-z]", "");
+    }
+}
