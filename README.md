@@ -667,3 +667,134 @@ public class DesisParserApplication {
         SpringApplication.run(DesisParserApplication.class, args);
     }
 }
+
+
+Full Updated Spring Boot Code
+
+
+---
+
+Model: ParseRequest.java
+
+package com.example.desisparser.model;
+
+public class ParseRequest {
+    private String desisData;
+
+    public String getDesisData() {
+        return desisData;
+    }
+
+    public void setDesisData(String desisData) {
+        this.desisData = desisData;
+    }
+}
+
+
+---
+
+Service: ParseService.java
+
+package com.example.desisparser.service;
+
+import org.springframework.stereotype.Service;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintWriter;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+@Service
+public class ParseService {
+
+    public ByteArrayInputStream convertToCsvFile(String desisData) {
+        Map<String, String> dataMap = new LinkedHashMap<>();
+
+        // Extract first fields
+        dataMap.put("Type Nature", desisData.substring(0, 2));
+        dataMap.put("Site Code", desisData.substring(2, 6));
+        dataMap.put("Application Code", desisData.substring(6, 14));
+        dataMap.put("Instrument Code", desisData.substring(14, 18));
+
+        String remaining = desisData.substring(18);
+
+        // Match all *XX:value or XX:value pairs
+        Pattern pattern = Pattern.compile("[*]?(\\d+):([^:*]+)");
+        Matcher matcher = pattern.matcher(remaining);
+
+        while (matcher.find()) {
+            String key = matcher.group(1).trim();
+            String value = matcher.group(2).trim();
+            dataMap.put(key, value);
+        }
+
+        // Write to CSV in memory
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        PrintWriter writer = new PrintWriter(out);
+
+        // Header
+        writer.println(String.join(",", dataMap.keySet()));
+        // Values
+        writer.println(String.join(",", dataMap.values()));
+
+        writer.flush();
+        return new ByteArrayInputStream(out.toByteArray());
+    }
+}
+
+
+---
+
+Controller: ParseController.java
+
+package com.example.desisparser.controller;
+
+import com.example.desisparser.model.ParseRequest;
+import com.example.desisparser.service.ParseService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/api/parse")
+public class ParseController {
+
+    @Autowired
+    private ParseService parseService;
+
+    @PostMapping("/desis-to-csv")
+    public ResponseEntity<InputStreamResource> convertDesisToCsv(@RequestBody ParseRequest request) {
+        var csvStream = parseService.convertToCsvFile(request.getDesisData());
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Disposition", "attachment; filename=desis_data.csv");
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .contentType(MediaType.parseMediaType("text/csv"))
+                .body(new InputStreamResource(csvStream));
+    }
+}
+
+
+---
+
+Main Class: DesisParserApplication.java
+
+package com.example.desisparser;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class DesisParserApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(DesisParserApplication.class, args);
+    }
+}
