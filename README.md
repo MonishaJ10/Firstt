@@ -572,8 +572,89 @@ cse
 
 
 -----------------
+model/ParseRequest.java
+package com.example.desisparser.model;
 
-DesisParserApplication.java
+public class ParseRequest {
+    private String desisData;
+
+    public String getDesisData() {
+        return desisData;
+    }
+
+    public void setDesisData(String desisData) {
+        this.desisData = desisData;
+    }
+}
+
+service/parse service.java
+package com.example.desisparser.service;
+
+import org.springframework.stereotype.Service;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+@Service
+public class ParseService {
+
+    public String convertToCsv(String desisData) {
+        Map<String, String> dataMap = new LinkedHashMap<>();
+
+        // Extract headers from first part (e.g., OP4035)
+        String typeNature = desisData.substring(0, 2);
+        String siteCode = desisData.substring(2, 6);
+        String appCode = desisData.substring(6, 14);
+        String instrumentCode = desisData.substring(14, 18);
+
+        dataMap.put("TypeNature", typeNature);
+        dataMap.put("SiteCode", siteCode);
+        dataMap.put("ApplicationCode", appCode);
+        dataMap.put("InstrumentCode", instrumentCode);
+
+        // Regex to match *code:value or code:value patterns
+        Pattern pattern = Pattern.compile("[*]?(\\d+):([^:*]+)");
+        Matcher matcher = pattern.matcher(desisData);
+
+        while (matcher.find()) {
+            String key = matcher.group(1).trim();
+            String value = matcher.group(2).trim();
+            dataMap.put(key, value);
+        }
+
+        // Generate CSV
+        StringBuilder csv = new StringBuilder();
+        // Header row
+        csv.append(String.join(",", dataMap.keySet())).append("\n");
+        // Data row
+        csv.append(String.join(",", dataMap.values())).append("\n");
+
+        return csv.toString();
+    }
+}
+
+controller/parser controller.java
+package com.example.desisparser.controller;
+
+import com.example.desisparser.model.ParseRequest;
+import com.example.desisparser.service.ParseService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/api/parse")
+public class ParseController {
+
+    @Autowired
+    private ParseService parseService;
+
+    @PostMapping("/desis-to-csv")
+    public String convertDesisToCsv(@RequestBody ParseRequest request) {
+        return parseService.convertToCsv(request.getDesisData());
+    }
+}
+
+desisparseapplication.java
 
 package com.example.desisparser;
 
@@ -584,102 +665,5 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class DesisParserApplication {
     public static void main(String[] args) {
         SpringApplication.run(DesisParserApplication.class, args);
-    }
-}
-
-
----
-
-2. ParserController.java (inside controller package)
-
-package com.example.desisparser.controller;
-
-import com.example.desisparser.service.DesisParserService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
-
-@RestController
-@RequestMapping("/api/parse")
-public class ParserController {
-
-    @Autowired
-    private DesisParserService desisParserService;
-
-    @PostMapping
-    public String parseDesisFile(@RequestBody String desisContent) {
-        return desisParserService.parseToCsv(desisContent);
-    }
-}
-
-
----
-
-3. DesisParserService.java (inside service package)
-
-package com.example.desisparser.service;
-
-import org.springframework.stereotype.Service;
-import java.util.LinkedHashMap;
-import java.util.Map;
-
-@Service
-public class DesisParserService {
-
-    public String parseToCsv(String desis) {
-        Map<String, String> parsedData = new LinkedHashMap<>();
-
-        // Split on * and space
-        String[] parts = desis.split("[*\\s]+");
-
-        for (String part : parts) {
-            if (part.contains(":")) {
-                int colonIndex = part.indexOf(":");
-                String key = part.substring(0, colonIndex).trim();
-                String value = part.substring(colonIndex + 1).trim();
-                parsedData.put(key, value);
-            }
-        }
-
-        // Build CSV
-        StringBuilder csv = new StringBuilder();
-        // Header row
-        parsedData.keySet().forEach(key -> csv.append(key).append(","));
-        csv.setLength(csv.length() - 1); // remove last comma
-        csv.append("\n");
-
-        // Value row
-        parsedData.values().forEach(value -> csv.append(value).append(","));
-        csv.setLength(csv.length() - 1); // remove last comma
-
-        return csv.toString();
-    }
-}
-
-
----
-
-4. application.properties
-
-server.port=8080
-
-
-package com.example.controller;
-
-import com.example.service.DesisParserService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
-@RestController
-@RequestMapping("/api/parser")
-public class ParserController {
-
-    @Autowired
-    private DesisParserService desisParserService;
-
-    @PostMapping
-    public String parseDesisFile(@RequestBody String desisContent) {
-        return desisParserService.parseToCsv(desisContent);
     }
 }
