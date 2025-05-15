@@ -898,3 +898,61 @@ public class DesisService {
         return input.replaceAll("[^A-Za-z]", "");
     }
 }
+
+
+Parsecontroller.java
+package com.example.desisparser.controller;
+
+import com.example.desisparser.service.ParseService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
+@RestController
+@RequestMapping("/api/parse")
+public class ParseController {
+
+    @Autowired
+    private ParseService parseService;
+
+    @PostMapping("/desis-to-csv")
+    public ResponseEntity<InputStreamResource> convertDesisToCsv(@RequestBody String desisData) {
+        var csvStream = parseService.convertToCsvFile(desisData);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Disposition", "attachment; filename=desis_data.csv");
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .contentType(MediaType.parseMediaType("text/csv"))
+                .body(new InputStreamResource(csvStream));
+    }
+
+    // For local testing with hardcoded file path
+    @GetMapping("/test-local-file")
+    public ResponseEntity<InputStreamResource> testLocalFile() throws IOException {
+        // Replace this path with your actual file location
+        String filePath = "C:/Users/YourName/Desktop/kondorfx.txt";
+
+        // Read file content from local system
+        String desisData = Files.readString(Path.of(filePath));
+
+        var csvStream = parseService.convertToCsvFile(desisData);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Disposition", "attachment; filename=desis_data.csv");
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .contentType(MediaType.parseMediaType("text/csv"))
+                .body(new InputStreamResource(csvStream));
+    }
+}
