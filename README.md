@@ -956,3 +956,68 @@ public class ParseController {
                 .body(new InputStreamResource(csvStream));
     }
 }
+
+Parse service.java
+package com.example.desisparser.service;
+
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.LinkedHashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+@Service
+public class ParseService {
+
+    public void processDesisFileToCSV(MultipartFile file, HttpServletResponse response) throws IOException {
+        String desisData = new String(file.getBytes());
+        processDesisToCSV(desisData, response);
+    }
+
+    public void processDesisToCSV(String desisData, HttpServletResponse response) throws IOException {
+        // Extract fixed fields
+        String type = desisData.substring(0, 2);
+        String siteCode = desisData.substring(2, 6);
+        String appCode = desisData.substring(6, 14);
+        String instrument = desisData.substring(14, 18);
+
+        // Rest of string
+        String rest = desisData.substring(18);
+
+        // Use regex to find key:value pairs (e.g., 89:TREASUR-PA)
+        Pattern pattern = Pattern.compile("(\\d+):([^:\\*]+)");
+        Matcher matcher = pattern.matcher(rest);
+
+        LinkedHashMap<String, String> csvMap = new LinkedHashMap<>();
+        csvMap.put("type", type);
+        csvMap.put("sitecode", siteCode);
+        csvMap.put("appcode", appCode);
+        csvMap.put("instrument", instrument);
+
+        while (matcher.find()) {
+            String key = matcher.group(1);
+            String value = matcher.group(2);
+            csvMap.put(key, value);
+        }
+
+        // Set CSV response headers
+        response.setContentType("text/csv");
+        response.setHeader("Content-Disposition", "attachment; filename=\"desis_output.csv\"");
+
+        PrintWriter writer = response.getWriter();
+
+        // Write CSV header
+        writer.println(String.join(",", csvMap.keySet()));
+
+        // Write values
+        writer.println(String.join(",", csvMap.values()));
+
+        writer.flush();
+        writer.close();
+    }
+}
+
