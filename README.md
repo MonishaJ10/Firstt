@@ -537,3 +537,198 @@ public class ParseService {
     }
 }
 
+
+
+-----------------------------------
+
+Here is a complete Spring Boot project that connects to your Percona MongoDB instance and exposes a REST API to fetch all records from a MongoDB collection.
+
+
+---
+
+1. pom.xml
+
+Add this to your Maven file:
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" ...>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.example</groupId>
+    <artifactId>mongodb-connection</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <name>mongodb-connection</name>
+    <description>MongoDB + Spring Boot Example</description>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.2.5</version>
+    </parent>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-mongodb</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+
+
+---
+
+2. application.properties
+
+In src/main/resources/application.properties, configure:
+
+spring.data.mongodb.uri=mongodb://<username>:<password>@eurvlii125734.xmp.net.intra:27017/RECONDEV
+spring.data.mongodb.database=RECONDEV
+
+> Replace <username> and <password> with the actual credentials (ask your CyberArk admin if you don't know them).
+
+
+
+
+---
+
+3. Model Class - Record.java
+
+package com.example.mongodbconnection.model;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+@Document(collection = "recon_nextGen") // Use your actual collection name
+public class Record {
+    @Id
+    private String id;
+
+    private String field1;
+    private String field2;
+
+    // Add more fields based on your MongoDB structure
+
+    // Getters and Setters
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getField1() {
+        return field1;
+    }
+
+    public void setField1(String field1) {
+        this.field1 = field1;
+    }
+
+    public String getField2() {
+        return field2;
+    }
+
+    public void setField2(String field2) {
+        this.field2 = field2;
+    }
+}
+
+
+---
+
+4. Repository Interface - RecordRepository.java
+
+package com.example.mongodbconnection.repository;
+
+import com.example.mongodbconnection.model.Record;
+import org.springframework.data.mongodb.repository.MongoRepository;
+
+public interface RecordRepository extends MongoRepository<Record, String> {
+}
+
+
+---
+
+5. Controller - RecordController.java
+
+package com.example.mongodbconnection.controller;
+
+import com.example.mongodbconnection.model.Record;
+import com.example.mongodbconnection.repository.RecordRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/records")
+public class RecordController {
+
+    @Autowired
+    private RecordRepository repository;
+
+    @GetMapping
+    public List<Record> getAllRecords() {
+        return repository.findAll();
+    }
+}
+
+
+---
+
+6. Application Entry Point - MongoDbConnectionApplication.java
+
+package com.example.mongodbconnection;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class MongoDbConnectionApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(MongoDbConnectionApplication.class, args);
+    }
+}
+
+
+---
+
+To Run the Application
+
+./mvnw spring-boot:run
+
+Then go to:
+
+http://localhost:8080/records
+
+This will return all the records from your MongoDB collection.
+
+
+---
+
+Let me know if you want:
+
+To upload CSV and insert into MongoDB
+
+To create a custom query
+
+Or to connect using CyberArk-secured credentials dynamically
+
+
+
+
