@@ -1,5 +1,5 @@
 ParseService.java
-package com.example.parser.service;
+package com.example.desisparser.service;
 
 import org.springframework.stereotype.Service;
 
@@ -53,7 +53,39 @@ public class ParseService {
 }
 
 
- 
+parseController.java
+
+package com.example.parser.controller;
+
+import com.example.parser.model.ParseRequest;
+import com.example.parser.service.ParseService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.io.*;
+
+@RestController
+@RequestMapping("/parse")
+public class ParseController {
+
+    @Autowired
+    private ParseService parseService;
+
+    @PostMapping("/desis-to-csv")
+    public ResponseEntity<InputStreamResource> convertDesisToCsv(@RequestBody ParseRequest request) throws IOException {
+        File csvFile = parseService.parseDesisToCsv(request.getFilePath());
+        InputStreamResource resource = new InputStreamResource(new FileInputStream(csvFile));
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=parsed_output.csv")
+                .contentType(MediaType.parseMediaType("text/csv"))
+                .body(resource);
+    }
+}
 
 -----------------
 model/ParseRequest.java
