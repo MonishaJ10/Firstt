@@ -527,3 +527,171 @@ import { Component } from '@angular/core';
       border-radius: 4px;
       background-color:0
 
+-----------------------------------------
+
+
+STEP 1: Create a new Angular standalone project
+
+Use Angular CLI to create a project without routing and with standalone components:
+
+ng new system-setup --standalone
+cd system-setup
+
+Choose:
+
+No routing
+
+CSS (not SCSS)
+
+
+
+---
+
+STEP 2: Generate the needed components
+
+ng generate component components/layout/header --standalone
+ng generate component components/layout/sidebar --standalone
+ng generate component pages/manage-company --standalone
+ng generate component pages/recon-master --standalone
+ng generate component pages/context-type --standalone
+ng generate component pages/reference-data/accounting-period-groups --standalone
+ng generate component pages/reference-data/calendars --standalone
+ng generate component pages/reference-data/counterparties --standalone
+ng generate component pages/reference-data/currencies --standalone
+ng generate component pages/reference-data/exchange-rates --standalone
+ng generate component pages/reference-data/item-types --standalone
+ng generate component pages/reference-data/reason-codes --standalone
+
+
+---
+
+STEP 3: Set up the main AppComponent
+
+Edit src/app/app.component.ts:
+
+import { Component } from '@angular/core';
+import { HeaderComponent } from './components/layout/header/header.component';
+import { SidebarComponent } from './components/layout/sidebar/sidebar.component';
+
+@Component({
+  selector: 'app-root',
+  standalone: true,
+  imports: [HeaderComponent, SidebarComponent],
+  template: `
+    <div class="bg-[#007a9e] text-white font-sans text-[13px] select-none">
+      <app-header></app-header>
+      <main class="flex h-[calc(100vh-3rem)]">
+        <app-sidebar></app-sidebar>
+        <router-outlet></router-outlet>
+      </main>
+    </div>
+  `
+})
+export class AppComponent {}
+
+
+---
+
+STEP 4: Set up routing
+
+Create app.routes.ts in src/app/:
+
+import { Routes } from '@angular/router';
+import { ManageCompanyComponent } from './pages/manage-company/manage-company.component';
+import { ReconMasterComponent } from './pages/recon-master/recon-master.component';
+import { ContextTypeComponent } from './pages/context-type/context-type.component';
+import { AccountingPeriodGroupsComponent } from './pages/reference-data/accounting-period-groups/accounting-period-groups.component';
+import { CalendarsComponent } from './pages/reference-data/calendars/calendars.component';
+import { CounterpartiesComponent } from './pages/reference-data/counterparties/counterparties.component';
+import { CurrenciesComponent } from './pages/reference-data/currencies/currencies.component';
+import { ExchangeRatesComponent } from './pages/reference-data/exchange-rates/exchange-rates.component';
+import { ItemTypesComponent } from './pages/reference-data/item-types/item-types.component';
+import { ReasonCodesComponent } from './pages/reference-data/reason-codes/reason-codes.component';
+
+export const routes: Routes = [
+  { path: 'manage-company', component: ManageCompanyComponent },
+  { path: 'recon-master', component: ReconMasterComponent },
+  { path: 'context-type', component: ContextTypeComponent },
+  { path: 'reference-data/accounting-period-groups', component: AccountingPeriodGroupsComponent },
+  { path: 'reference-data/calendars', component: CalendarsComponent },
+  { path: 'reference-data/counterparties', component: CounterpartiesComponent },
+  { path: 'reference-data/currencies', component: CurrenciesComponent },
+  { path: 'reference-data/exchange-rates', component: ExchangeRatesComponent },
+  { path: 'reference-data/item-types', component: ItemTypesComponent },
+  { path: 'reference-data/reason-codes', component: ReasonCodesComponent },
+  { path: '**', redirectTo: 'manage-company' }
+];
+
+
+---
+
+STEP 5: Update main.ts
+
+Replace main.ts with:
+
+import { bootstrapApplication } from '@angular/platform-browser';
+import { AppComponent } from './app/app.component';
+import { provideRouter } from '@angular/router';
+import { routes } from './app/app.routes';
+
+bootstrapApplication(AppComponent, {
+  providers: [provideRouter(routes)],
+});
+
+
+---
+
+STEP 6: Build the sidebar with exact items
+
+In sidebar.component.ts, you’ll implement the HTML sidebar from your original code and link it with router navigation using [routerLink].
+
+
+---
+
+STEP 7: Add Font Awesome
+
+Install and configure Font Awesome:
+
+npm install @fortawesome/fontawesome-free
+
+In angular.json, under "styles":
+
+"styles": [
+  "node_modules/@fortawesome/fontawesome-free/css/all.min.css",
+  "src/styles.css"
+]
+
+
+---
+
+STEP 8: Copy and apply CSS styles
+
+Move your custom styles (like the scrollbar) into styles.css.
+
+Also, update components with class names as per your HTML.
+
+
+---
+
+STEP 9: Run the project
+
+ng serve
+
+You will now have:
+
+A top header bar
+
+A collapsible left sidebar
+
+Routing to each component (including Reference Data items)
+
+Clean Angular project structure without app.module.ts
+
+
+
+---
+
+If you'd like, I can provide you the Angular code for each sidebar item and dropdown toggle logic as well. Would you like the files generated for sidebar.component.html and a few sample routed components (like accounting-period-groups)?
+
+
+
