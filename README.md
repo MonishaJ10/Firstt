@@ -673,36 +673,9 @@ Also, update components with class names as per your HTML.
 
 ---
 
+1. sidebar.component Files
 
-1. sidebar.component.html
-
-<ul class="sidebar">
-  <li><a routerLink="/home">Home</a></li>
-  <li><a routerLink="/system-setup">System Setup</a></li>
-  <li><a routerLink="/manage-company">Manage Company</a></li>
-  <li><a routerLink="/recon-master">Recon Master</a></li>
-  <li><a routerLink="/content-type">Content Type</a></li>
-
-  <!-- Reference Data with toggle -->
-  <li (click)="toggleReferenceData()" class="dropdown-toggle">
-    <span>Reference Data</span>
-    <span class="arrow" [ngClass]="{ 'open': isReferenceDataOpen }">&#9662;</span>
-  </li>
-  <ul class="submenu" *ngIf="isReferenceDataOpen">
-    <li><a routerLink="/reference-data/accounting-world-groups">Accounting World Groups</a></li>
-    <li><a routerLink="/reference-data/calendars">Calendars</a></li>
-    <li><a routerLink="/reference-data/counterparties">Counterparties</a></li>
-    <li><a routerLink="/reference-data/currencies">Currencies</a></li>
-    <li><a routerLink="/reference-data/exchange-rates">Exchange Rates</a></li>
-    <li><a routerLink="/reference-data/item-types">Item Types</a></li>
-    <li><a routerLink="/reference-data/reason-codes">Reason Codes</a></li>
-  </ul>
-</ul>
-
-
----
-
-2. sidebar.component.ts
+sidebar.component.ts
 
 import { Component } from '@angular/core';
 
@@ -722,64 +695,56 @@ export class SidebarComponent {
 
 ---
 
-3. sidebar.component.css (optional styling)
+sidebar.component.html
+
+<ul class="sidebar">
+  <li><a routerLink="/home">Home</a></li>
+  <li><a routerLink="/system-setup">System Setup</a></li>
+  <li><a routerLink="/manage-company">Manage Company</a></li>
+  <li><a routerLink="/recon-master">Recon Master</a></li>
+  <li><a routerLink="/content-type">Content Type</a></li>
+
+  <li (click)="toggleReferenceData()" class="dropdown-toggle">
+    <span>Reference Data</span>
+    <span class="arrow" [ngClass]="{ 'open': isReferenceDataOpen }">&#9662;</span>
+  </li>
+  <ul class="submenu" *ngIf="isReferenceDataOpen">
+    <li><a routerLink="/reference-data/accounting-world-groups">Accounting World Groups</a></li>
+    <li><a routerLink="/reference-data/calendars">Calendars</a></li>
+    <li><a routerLink="/reference-data/counterparties">Counterparties</a></li>
+    <li><a routerLink="/reference-data/currencies">Currencies</a></li>
+    <li><a routerLink="/reference-data/exchange-rates">Exchange Rates</a></li>
+    <li><a routerLink="/reference-data/item-types">Item Types</a></li>
+    <li><a routerLink="/reference-data/reason-codes">Reason Codes</a></li>
+  </ul>
+</ul>
+
+
+---
+
+sidebar.component.css
 
 .sidebar {
-  width: 220px;
-  background-color: #2f3e46;
-  color: white;
-  height: 100vh;
-  padding-top: 1rem;
-}
-
-.sidebar-menu {
-  list-style-type: none;
+  list-style: none;
   padding: 0;
+  background-color: #14343c;
+  color: white;
+  width: 250px;
 }
 
-.sidebar-menu li a {
-  display: block;
-  padding: 10px 20px;
+.sidebar li {
+  padding: 12px 16px;
+  cursor: pointer;
+}
+
+.sidebar li a {
   color: white;
   text-decoration: none;
 }
 
-.sidebar-menu li a.active,
-.sidebar-menu li a:hover {
-  background-color: #354f52;
-}
-
 .submenu {
-  list-style-type: none;
-  padding-left: 20px;
-}
-
-.arrow {
-  float: right;
-  transition: transform 0.3s;
-}
-
-.arrow.open {
-  transform: rotate(180deg);
-}
-
-
-updated css
-
-.sidebar {
-  list-style: none;
-  padding: 0;
-}
-
-.sidebar li {
-  padding: 10px;
-  cursor: pointer;
-}
-
-.submenu {
-  list-style: none;
-  padding-left: 20px;
   background-color: #1e2d3d;
+  padding-left: 20px;
 }
 
 .arrow {
@@ -791,7 +756,67 @@ updated css
   transform: rotate(180deg);
 }
 
+
 ---
+
+2. header.component Files
+
+header.component.ts
+
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-header',
+  templateUrl: './header.component.html',
+  styleUrls: ['./header.component.css']
+})
+export class HeaderComponent { }
+
+
+---
+
+header.component.html
+
+<header class="header">
+  <div class="left">
+    <span class="title">System Setup</span>
+  </div>
+  <div class="right">
+    <input type="text" placeholder="Search..." class="search-input">
+    <i class="icon bell">🔔</i>
+    <i class="icon settings">⚙️</i>
+    <i class="icon user">👤</i>
+  </div>
+</header>
+
+
+---
+
+header.component.css
+
+.header {
+  background-color: #1e2d3d;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+}
+
+.search-input {
+  padding: 6px;
+  border-radius: 4px;
+  border: none;
+  outline: none;
+  margin-right: 15px;
+}
+
+.icon {
+  margin: 0 8px;
+  cursor: pointer;
+}
+
+
 
 
 
