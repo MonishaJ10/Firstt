@@ -191,3 +191,6 @@ html
   </div>
 </div>
 Repeat for each other component by copying the respective section.
+
+
+WITH NORMAL CSS
