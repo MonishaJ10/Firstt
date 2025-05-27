@@ -764,6 +764,33 @@ export class SidebarComponent {
 }
 
 
+updated css
+
+.sidebar {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar li {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.submenu {
+  list-style: none;
+  padding-left: 20px;
+  background-color: #1e2d3d;
+}
+
+.arrow {
+  float: right;
+  transition: transform 0.3s ease;
+}
+
+.arrow.open {
+  transform: rotate(180deg);
+}
+
 ---
 
 
