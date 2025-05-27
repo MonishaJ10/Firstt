@@ -673,25 +673,107 @@ Also, update components with class names as per your HTML.
 
 ---
 
-STEP 9: Run the project
 
-ng serve
+1. sidebar.component.html
 
-You will now have:
+<nav class="sidebar">
+  <ul class="sidebar-menu">
+    <li>
+      <a routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
+    </li>
 
-A top header bar
+    <li>
+      <a href="#" (click)="toggleReferenceData()" [class.active]="isReferenceDataOpen">
+        Reference Data
+        <span class="arrow" [ngClass]="{ 'open': isReferenceDataOpen }">&#9662;</span>
+      </a>
+      <ul class="submenu" *ngIf="isReferenceDataOpen">
+        <li><a routerLink="/reference-data/accounting-period-groups">Accounting Period Groups</a></li>
+        <li><a routerLink="/reference-data/calendars">Calendars</a></li>
+        <li><a routerLink="/reference-data/counterparties">Counterparties</a></li>
+        <li><a routerLink="/reference-data/currencies">Currencies</a></li>
+        <li><a routerLink="/reference-data/exchange-rates">Exchange Rates</a></li>
+        <li><a routerLink="/reference-data/item-types">Item Types</a></li>
+        <li><a routerLink="/reference-data/reason-codes">Reason Codes</a></li>
+      </ul>
+    </li>
 
-A collapsible left sidebar
+    <li>
+      <a routerLink="/transactions" routerLinkActive="active">Transactions</a>
+    </li>
 
-Routing to each component (including Reference Data items)
-
-Clean Angular project structure without app.module.ts
-
+    <li>
+      <a routerLink="/reports" routerLinkActive="active">Reports</a>
+    </li>
+  </ul>
+</nav>
 
 
 ---
 
-If you'd like, I can provide you the Angular code for each sidebar item and dropdown toggle logic as well. Would you like the files generated for sidebar.component.html and a few sample routed components (like accounting-period-groups)?
+2. sidebar.component.ts
+
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-sidebar',
+  templateUrl: './sidebar.component.html',
+  styleUrls: ['./sidebar.component.css']
+})
+export class SidebarComponent {
+  isReferenceDataOpen = false;
+
+  toggleReferenceData(): void {
+    this.isReferenceDataOpen = !this.isReferenceDataOpen;
+  }
+}
+
+
+---
+
+3. sidebar.component.css (optional styling)
+
+.sidebar {
+  width: 220px;
+  background-color: #2f3e46;
+  color: white;
+  height: 100vh;
+  padding-top: 1rem;
+}
+
+.sidebar-menu {
+  list-style-type: none;
+  padding: 0;
+}
+
+.sidebar-menu li a {
+  display: block;
+  padding: 10px 20px;
+  color: white;
+  text-decoration: none;
+}
+
+.sidebar-menu li a.active,
+.sidebar-menu li a:hover {
+  background-color: #354f52;
+}
+
+.submenu {
+  list-style-type: none;
+  padding-left: 20px;
+}
+
+.arrow {
+  float: right;
+  transition: transform 0.3s;
+}
+
+.arrow.open {
+  transform: rotate(180deg);
+}
+
+
+---
 
 
 
