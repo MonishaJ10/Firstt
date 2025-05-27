@@ -676,37 +676,28 @@ Also, update components with class names as per your HTML.
 
 1. sidebar.component.html
 
-<nav class="sidebar">
-  <ul class="sidebar-menu">
-    <li>
-      <a routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
-    </li>
+<ul class="sidebar">
+  <li><a routerLink="/home">Home</a></li>
+  <li><a routerLink="/system-setup">System Setup</a></li>
+  <li><a routerLink="/manage-company">Manage Company</a></li>
+  <li><a routerLink="/recon-master">Recon Master</a></li>
+  <li><a routerLink="/content-type">Content Type</a></li>
 
-    <li>
-      <a href="#" (click)="toggleReferenceData()" [class.active]="isReferenceDataOpen">
-        Reference Data
-        <span class="arrow" [ngClass]="{ 'open': isReferenceDataOpen }">&#9662;</span>
-      </a>
-      <ul class="submenu" *ngIf="isReferenceDataOpen">
-        <li><a routerLink="/reference-data/accounting-period-groups">Accounting Period Groups</a></li>
-        <li><a routerLink="/reference-data/calendars">Calendars</a></li>
-        <li><a routerLink="/reference-data/counterparties">Counterparties</a></li>
-        <li><a routerLink="/reference-data/currencies">Currencies</a></li>
-        <li><a routerLink="/reference-data/exchange-rates">Exchange Rates</a></li>
-        <li><a routerLink="/reference-data/item-types">Item Types</a></li>
-        <li><a routerLink="/reference-data/reason-codes">Reason Codes</a></li>
-      </ul>
-    </li>
-
-    <li>
-      <a routerLink="/transactions" routerLinkActive="active">Transactions</a>
-    </li>
-
-    <li>
-      <a routerLink="/reports" routerLinkActive="active">Reports</a>
-    </li>
+  <!-- Reference Data with toggle -->
+  <li (click)="toggleReferenceData()" class="dropdown-toggle">
+    <span>Reference Data</span>
+    <span class="arrow" [ngClass]="{ 'open': isReferenceDataOpen }">&#9662;</span>
+  </li>
+  <ul class="submenu" *ngIf="isReferenceDataOpen">
+    <li><a routerLink="/reference-data/accounting-world-groups">Accounting World Groups</a></li>
+    <li><a routerLink="/reference-data/calendars">Calendars</a></li>
+    <li><a routerLink="/reference-data/counterparties">Counterparties</a></li>
+    <li><a routerLink="/reference-data/currencies">Currencies</a></li>
+    <li><a routerLink="/reference-data/exchange-rates">Exchange Rates</a></li>
+    <li><a routerLink="/reference-data/item-types">Item Types</a></li>
+    <li><a routerLink="/reference-data/reason-codes">Reason Codes</a></li>
   </ul>
-</nav>
+</ul>
 
 
 ---
