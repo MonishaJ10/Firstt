@@ -547,8 +547,8 @@ ng generate component sidebar
 
 <link
   rel="stylesheet"
-  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-  integrity="sha512-pap+pD1I6eZrY+yzKf8ImVuN+vQGzA9sF6+mRj7i9PNCClh1W8/Nq+MbzF0+pSBbe63mMKe0S2+SZX0oZPOdwg=="
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+  integrity="sha512-T4fQyP5IcGLlUjk5L2qD1x7g0Lrxy3aHc2PfD1s4M7rMZ5qIpH2XtqD3/fnMGpJxRP0kHfu3eHRcZG55gdP3cg=="
   crossorigin="anonymous"
   referrerpolicy="no-referrer"
 />
