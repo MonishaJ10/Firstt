@@ -562,176 +562,17 @@ add this in angular.json
 
 ________________________________________
 
-To implement the described dashboard feature in Angular, here's a step-by-step breakdown:
+
+Great! Here's the complete set of updated Angular code files you can copy-paste directly into your project to fully implement the "Manage Dashboard" feature.
 
 
 ---
 
-🧩 1. Project Structure Example
+✅ File 1: dashboard.service.ts
 
-src/
-├── app/
-│   ├── components/
-│   │   ├── manage-dashboard/
-│   │   │   ├── manage-dashboard.component.ts/html/css
-│   │   │   ├── blank-dashboard.component.ts/html/css
-│   │   │   ├── interactive-dashboard.component.ts/html/css
-│   │   │   ├── dashboard-steps/
-│   │   │   │   ├── initial-step.component.ts
-│   │   │   │   ├── content-step.component.ts
-│   │   │   │   ├── layout-step.component.ts
-│   │   │   │   ├── review-step.component.ts
-│   ├── services/
-│   │   ├── dashboard.service.ts
+📁 src/app/pages/inventory-configuration/manage-dashboard/dashboard.service.ts
 
-
----
-
-📌 2. Manage Dashboard Component
-
-manage-dashboard.component.html
-
-<div *ngIf="showManageDashboard" class="dashboard-container">
-  <div class="dashboard-header">
-    <span>Manage Dashboard</span>
-    <button (click)="closeManageDashboard()">X</button>
-  </div>
-
-  <div class="new-dashboard">
-    <button (click)="selectDashboardType('blank')">Blank Dashboard</button>
-    <button (click)="selectDashboardType('interactive')">Interactive Dashboard</button>
-  </div>
-
-  <ng-container *ngIf="selectedDashboardType === 'blank'">
-    <app-blank-dashboard (dashboardCreated)="refreshDashboardList()"></app-blank-dashboard>
-  </ng-container>
-
-  <ng-container *ngIf="selectedDashboardType === 'interactive'">
-    <app-interactive-dashboard (dashboardCreated)="refreshDashboardList()"></app-interactive-dashboard>
-  </ng-container>
-
-  <table *ngIf="dashboards.length > 0">
-    <thead>
-      <tr>
-        <th>Name</th><th>Description</th><th>Created By</th><th>Created Date</th>
-        <th>Modified By</th><th>Modified Date</th><th>Public</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let d of dashboards">
-        <td>{{ d.name }}</td>
-        <td>{{ d.description }}</td>
-        <td>{{ d.createdBy }}</td>
-        <td>{{ d.createdDate }}</td>
-        <td>{{ d.modifiedBy }}</td>
-        <td>{{ d.modifiedDate }}</td>
-        <td>{{ d.public ? 'Yes' : 'No' }}</td>
-      </tr>
-    </tbody>
-  </table>
-
-  <p *ngIf="dashboards.length === 0">No Rows To Show</p>
-</div>
-
-manage-dashboard.component.ts
-
-export class ManageDashboardComponent {
-  showManageDashboard = true;
-  selectedDashboardType: string | null = null;
-  dashboards = [];
-
-  constructor(private dashboardService: DashboardService) {}
-
-  closeManageDashboard() {
-    this.showManageDashboard = false;
-  }
-
-  selectDashboardType(type: string) {
-    this.selectedDashboardType = type;
-  }
-
-  refreshDashboardList() {
-    this.dashboards = this.dashboardService.getDashboards();
-  }
-}
-
-
----
-
-🧱 3. Blank Dashboard with Step Flow
-
-blank-dashboard.component.ts
-
-export class BlankDashboardComponent {
-  currentStep = 1;
-  dashboard = {
-    name: '',
-    description: '',
-    public: true
-  };
-
-  @Output() dashboardCreated = new EventEmitter<void>();
-
-  nextStep() {
-    if (this.currentStep < 4) {
-      this.currentStep++;
-    } else {
-      // Final Step - Save dashboard
-      this.saveDashboard();
-    }
-  }
-
-  saveDashboard() {
-    const newDashboard = {
-      ...this.dashboard,
-      createdBy: 'User1',
-      createdDate: new Date().toISOString(),
-      modifiedBy: '',
-      modifiedDate: '',
-    };
-    this.dashboardService.addDashboard(newDashboard);
-    this.dashboardCreated.emit();
-  }
-}
-
-blank-dashboard.component.html
-
-<div *ngIf="currentStep === 1">
-  <h3>Initial</h3>
-  <input placeholder="Add a name" [(ngModel)]="dashboard.name" required />
-  <input placeholder="Description" [(ngModel)]="dashboard.description" />
-  <label>
-    <input type="radio" [(ngModel)]="dashboard.public" [value]="true" /> Public
-  </label>
-  <label>
-    <input type="radio" [(ngModel)]="dashboard.public" [value]="false" /> Private
-  </label>
-  <button (click)="nextStep()">Next</button>
-</div>
-
-<div *ngIf="currentStep === 2">
-  <h3>Content</h3>
-  <button (click)="nextStep()">Next</button>
-</div>
-
-<div *ngIf="currentStep === 3">
-  <h3>Layout</h3>
-  <button (click)="nextStep()">Next</button>
-</div>
-
-<div *ngIf="currentStep === 4">
-  <h3>Review</h3>
-  <p><strong>Name:</strong> {{dashboard.name}}</p>
-  <p><strong>Description:</strong> {{dashboard.description}}</p>
-  <button (click)="nextStep()">Create</button>
-</div>
-
-
----
-
-📦 4. Dashboard Service
-
-dashboard.service.ts
+import { Injectable } from '@angular/core';
 
 @Injectable({
   providedIn: 'root'
@@ -751,13 +592,224 @@ export class DashboardService {
 
 ---
 
-✅ 5. Main App Component or Sidebar Action
+✅ File 2: manage-dashboard.component.ts
 
-In your main app or sidebar component, you can show ManageDashboardComponent when "Manage Dashboard" is clicked.
+📁 src/app/pages/inventory-configuration/manage-dashboard/manage-dashboard.component.ts
+
+import { Component } from '@angular/core';
+import { DashboardService } from './dashboard.service';
+import { BlankDashboardComponent } from './blank-dashboard.component';
+import { InteractiveDashboardComponent } from './interactive-dashboard.component';
+
+@Component({
+  selector: 'app-manage-dashboard',
+  standalone: true,
+  imports: [BlankDashboardComponent, InteractiveDashboardComponent],
+  templateUrl: './manage-dashboard.component.html',
+})
+export class ManageDashboardComponent {
+  showManageDashboard = true;
+  selectedDashboardType: string | null = null;
+  dashboards = [];
+
+  constructor(private dashboardService: DashboardService) {
+    this.refreshDashboardList();
+  }
+
+  closeManageDashboard() {
+    this.showManageDashboard = false;
+  }
+
+  selectDashboardType(type: string) {
+    this.selectedDashboardType = type;
+  }
+
+  refreshDashboardList() {
+    this.dashboards = this.dashboardService.getDashboards();
+  }
+}
 
 
 ---
 
-Let me know if you'd like this turned into a working StackBlitz or want to use Angular Material components for a better UI.
+✅ File 3: manage-dashboard.component.html
 
+📁 src/app/pages/inventory-configuration/manage-dashboard/manage-dashboard.component.html
+
+<div *ngIf="showManageDashboard">
+  <h2>Manage Dashboard</h2>
+  <button (click)="closeManageDashboard()">Close</button>
+
+  <div>
+    <button (click)="selectDashboardType('blank')">Blank Dashboard</button>
+    <button (click)="selectDashboardType('interactive')">Interactive Dashboard</button>
+  </div>
+
+  <ng-container *ngIf="selectedDashboardType === 'blank'">
+    <app-blank-dashboard (dashboardCreated)="refreshDashboardList()"></app-blank-dashboard>
+  </ng-container>
+
+  <ng-container *ngIf="selectedDashboardType === 'interactive'">
+    <app-interactive-dashboard (dashboardCreated)="refreshDashboardList()"></app-interactive-dashboard>
+  </ng-container>
+
+  <table *ngIf="dashboards.length > 0">
+    <tr>
+      <th>Name</th><th>Description</th><th>Public</th><th>Created Date</th>
+    </tr>
+    <tr *ngFor="let d of dashboards">
+      <td>{{ d.name }}</td>
+      <td>{{ d.description }}</td>
+      <td>{{ d.public ? 'Yes' : 'No' }}</td>
+      <td>{{ d.createdDate }}</td>
+    </tr>
+  </table>
+
+  <p *ngIf="dashboards.length === 0">No Rows To Show</p>
+</div>
+
+
+---
+
+✅ File 4: blank-dashboard.component.ts
+
+📁 src/app/pages/inventory-configuration/manage-dashboard/blank-dashboard.component.ts
+
+import { Component, Output, EventEmitter } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { DashboardService } from './dashboard.service';
+
+@Component({
+  selector: 'app-blank-dashboard',
+  standalone: true,
+  imports: [FormsModule],
+  templateUrl: './blank-dashboard.component.html',
+})
+export class BlankDashboardComponent {
+  currentStep = 1;
+  dashboard = {
+    name: '',
+    description: '',
+    public: true
+  };
+
+  @Output() dashboardCreated = new EventEmitter<void>();
+
+  constructor(private dashboardService: DashboardService) {}
+
+  nextStep() {
+    if (this.currentStep < 4) {
+      this.currentStep++;
+    } else {
+      this.saveDashboard();
+    }
+  }
+
+  saveDashboard() {
+    const newDashboard = {
+      ...this.dashboard,
+      createdBy: 'User1',
+      createdDate: new Date().toISOString(),
+    };
+    this.dashboardService.addDashboard(newDashboard);
+    this.dashboardCreated.emit();
+    this.currentStep = 1;
+    this.dashboard = { name: '', description: '', public: true };
+  }
+}
+
+
+---
+
+✅ File 5: blank-dashboard.component.html
+
+📁 src/app/pages/inventory-configuration/manage-dashboard/blank-dashboard.component.html
+
+<div *ngIf="currentStep === 1">
+  <h3>Step 1: Basic Info</h3>
+  <input placeholder="Dashboard Name" [(ngModel)]="dashboard.name" />
+  <input placeholder="Description" [(ngModel)]="dashboard.description" />
+  <label>
+    <input type="radio" [(ngModel)]="dashboard.public" [value]="true" /> Public
+  </label>
+  <label>
+    <input type="radio" [(ngModel)]="dashboard.public" [value]="false" /> Private
+  </label>
+  <button (click)="nextStep()">Next</button>
+</div>
+
+<div *ngIf="currentStep === 2">
+  <h3>Step 2: Content</h3>
+  <!-- Add form fields for content later -->
+  <button (click)="nextStep()">Next</button>
+</div>
+
+<div *ngIf="currentStep === 3">
+  <h3>Step 3: Layout</h3>
+  <!-- Add layout options later -->
+  <button (click)="nextStep()">Next</button>
+</div>
+
+<div *ngIf="currentStep === 4">
+  <h3>Step 4: Review</h3>
+  <p><strong>Name:</strong> {{dashboard.name}}</p>
+  <p><strong>Description:</strong> {{dashboard.description}}</p>
+  <p><strong>Visibility:</strong> {{dashboard.public ? 'Public' : 'Private'}}</p>
+  <button (click)="nextStep()">Create</button>
+</div>
+
+
+---
+
+✅ File 6: interactive-dashboard.component.ts
+
+📁 src/app/pages/inventory-configuration/manage-dashboard/interactive-dashboard.component.ts
+
+import { Component, Output, EventEmitter } from '@angular/core';
+
+@Component({
+  selector: 'app-interactive-dashboard',
+  standalone: true,
+  template: `<p>Interactive dashboard coming soon.</p>`,
+})
+export class InteractiveDashboardComponent {
+  @Output() dashboardCreated = new EventEmitter<void>();
+}
+
+
+---
+
+✅ Update AppComponent (example)
+
+📁 src/app/app.component.html
+
+<button (click)="navigateToSubModule('manage-dashboard')">Manage Dashboard</button>
+
+<app-manage-dashboard *ngIf="selectedSubModule === 'manage-dashboard'"></app-manage-dashboard>
+
+📁 src/app/app.component.ts
+
+Make sure you have something like:
+
+export class AppComponent {
+  selectedSubModule: string | null = null;
+
+  navigateToSubModule(name: string) {
+    this.selectedSubModule = name;
+  }
+}
+
+
+---
+
+Let me know if you want to also:
+
+✅ Add real routing to use /inventory/manage-dashboard
+
+✅ Save dashboard data to localStorage or backend
+
+✅ Add styling with Angular Material
+
+
+Ready for the next step?
 
