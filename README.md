@@ -590,6 +590,25 @@ export class DashboardService {
 }
 
 
+import { Injectable } from '@angular/core';
+import { Dashboard } from './dashboard.model';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class DashboardService {
+  private dashboards: Dashboard[] = [];
+
+  getDashboards(): Dashboard[] {
+    return this.dashboards;
+  }
+
+  addDashboard(dashboard: Dashboard): void {
+    this.dashboards.push(dashboard);
+  }
+}
+
+
 ---
 
 ✅ File 2: manage-dashboard.component.ts
