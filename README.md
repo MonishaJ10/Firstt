@@ -544,7 +544,7 @@ ng g c pages/system-setup
 ng generate component sidebar        
 
 
-
+index.html
 <link
   rel="stylesheet"
   href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
@@ -553,8 +553,211 @@ ng generate component sidebar
   referrerpolicy="no-referrer"
 />
 
+add this in angular.json
 "styles": [
   "src/styles.css",
   "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
 ]
+
+
+________________________________________
+
+To implement the described dashboard feature in Angular, here's a step-by-step breakdown:
+
+
+---
+
+🧩 1. Project Structure Example
+
+src/
+├── app/
+│   ├── components/
+│   │   ├── manage-dashboard/
+│   │   │   ├── manage-dashboard.component.ts/html/css
+│   │   │   ├── blank-dashboard.component.ts/html/css
+│   │   │   ├── interactive-dashboard.component.ts/html/css
+│   │   │   ├── dashboard-steps/
+│   │   │   │   ├── initial-step.component.ts
+│   │   │   │   ├── content-step.component.ts
+│   │   │   │   ├── layout-step.component.ts
+│   │   │   │   ├── review-step.component.ts
+│   ├── services/
+│   │   ├── dashboard.service.ts
+
+
+---
+
+📌 2. Manage Dashboard Component
+
+manage-dashboard.component.html
+
+<div *ngIf="showManageDashboard" class="dashboard-container">
+  <div class="dashboard-header">
+    <span>Manage Dashboard</span>
+    <button (click)="closeManageDashboard()">X</button>
+  </div>
+
+  <div class="new-dashboard">
+    <button (click)="selectDashboardType('blank')">Blank Dashboard</button>
+    <button (click)="selectDashboardType('interactive')">Interactive Dashboard</button>
+  </div>
+
+  <ng-container *ngIf="selectedDashboardType === 'blank'">
+    <app-blank-dashboard (dashboardCreated)="refreshDashboardList()"></app-blank-dashboard>
+  </ng-container>
+
+  <ng-container *ngIf="selectedDashboardType === 'interactive'">
+    <app-interactive-dashboard (dashboardCreated)="refreshDashboardList()"></app-interactive-dashboard>
+  </ng-container>
+
+  <table *ngIf="dashboards.length > 0">
+    <thead>
+      <tr>
+        <th>Name</th><th>Description</th><th>Created By</th><th>Created Date</th>
+        <th>Modified By</th><th>Modified Date</th><th>Public</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let d of dashboards">
+        <td>{{ d.name }}</td>
+        <td>{{ d.description }}</td>
+        <td>{{ d.createdBy }}</td>
+        <td>{{ d.createdDate }}</td>
+        <td>{{ d.modifiedBy }}</td>
+        <td>{{ d.modifiedDate }}</td>
+        <td>{{ d.public ? 'Yes' : 'No' }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p *ngIf="dashboards.length === 0">No Rows To Show</p>
+</div>
+
+manage-dashboard.component.ts
+
+export class ManageDashboardComponent {
+  showManageDashboard = true;
+  selectedDashboardType: string | null = null;
+  dashboards = [];
+
+  constructor(private dashboardService: DashboardService) {}
+
+  closeManageDashboard() {
+    this.showManageDashboard = false;
+  }
+
+  selectDashboardType(type: string) {
+    this.selectedDashboardType = type;
+  }
+
+  refreshDashboardList() {
+    this.dashboards = this.dashboardService.getDashboards();
+  }
+}
+
+
+---
+
+🧱 3. Blank Dashboard with Step Flow
+
+blank-dashboard.component.ts
+
+export class BlankDashboardComponent {
+  currentStep = 1;
+  dashboard = {
+    name: '',
+    description: '',
+    public: true
+  };
+
+  @Output() dashboardCreated = new EventEmitter<void>();
+
+  nextStep() {
+    if (this.currentStep < 4) {
+      this.currentStep++;
+    } else {
+      // Final Step - Save dashboard
+      this.saveDashboard();
+    }
+  }
+
+  saveDashboard() {
+    const newDashboard = {
+      ...this.dashboard,
+      createdBy: 'User1',
+      createdDate: new Date().toISOString(),
+      modifiedBy: '',
+      modifiedDate: '',
+    };
+    this.dashboardService.addDashboard(newDashboard);
+    this.dashboardCreated.emit();
+  }
+}
+
+blank-dashboard.component.html
+
+<div *ngIf="currentStep === 1">
+  <h3>Initial</h3>
+  <input placeholder="Add a name" [(ngModel)]="dashboard.name" required />
+  <input placeholder="Description" [(ngModel)]="dashboard.description" />
+  <label>
+    <input type="radio" [(ngModel)]="dashboard.public" [value]="true" /> Public
+  </label>
+  <label>
+    <input type="radio" [(ngModel)]="dashboard.public" [value]="false" /> Private
+  </label>
+  <button (click)="nextStep()">Next</button>
+</div>
+
+<div *ngIf="currentStep === 2">
+  <h3>Content</h3>
+  <button (click)="nextStep()">Next</button>
+</div>
+
+<div *ngIf="currentStep === 3">
+  <h3>Layout</h3>
+  <button (click)="nextStep()">Next</button>
+</div>
+
+<div *ngIf="currentStep === 4">
+  <h3>Review</h3>
+  <p><strong>Name:</strong> {{dashboard.name}}</p>
+  <p><strong>Description:</strong> {{dashboard.description}}</p>
+  <button (click)="nextStep()">Create</button>
+</div>
+
+
+---
+
+📦 4. Dashboard Service
+
+dashboard.service.ts
+
+@Injectable({
+  providedIn: 'root'
+})
+export class DashboardService {
+  private dashboards: any[] = [];
+
+  getDashboards() {
+    return this.dashboards;
+  }
+
+  addDashboard(dashboard: any) {
+    this.dashboards.push(dashboard);
+  }
+}
+
+
+---
+
+✅ 5. Main App Component or Sidebar Action
+
+In your main app or sidebar component, you can show ManageDashboardComponent when "Manage Dashboard" is clicked.
+
+
+---
+
+Let me know if you'd like this turned into a working StackBlitz or want to use Angular Material components for a better UI.
+
 
