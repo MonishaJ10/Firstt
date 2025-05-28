@@ -878,3 +878,143 @@ Let me know if you want to also:
 
 Ready for the next step?
 
+
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+dashboard.comp.html
+<div class="manage-dashboard-container">
+
+  <!-- Header with Title and Close Button -->
+  <div class="header">
+    <h2>Manage Dashboard</h2>
+    <button class="close-btn" (click)="closeManageDashboard()">✖</button>
+  </div>
+
+  <!-- New Dashboard Box Section -->
+  <div class="dashboard-options">
+    <div class="dashboard-option" (click)="selectDashboardType('blank')">
+      <div class="icon">&#128202;</div>
+      <p>Blank Dashboard</p>
+    </div>
+
+    <div class="dashboard-option" (click)="selectDashboardType('interactive')">
+      <div class="icon">&#128187;</div>
+      <p>Interactive Dashboard</p>
+    </div>
+  </div>
+
+  <!-- Dashboard Components Rendering -->
+  <ng-container *ngIf="selectedDashboardType === 'blank'">
+    <app-blank-dashboard (dashboardCreated)="refreshDashboardList()"></app-blank-dashboard>
+  </ng-container>
+
+  <ng-container *ngIf="selectedDashboardType === 'interactive'">
+    <app-interactive-dashboard (dashboardCreated)="refreshDashboardList()"></app-interactive-dashboard>
+  </ng-container>
+
+  <!-- Dashboard Table -->
+  <div class="dashboard-table">
+    <table *ngIf="dashboards.length > 0">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Description</th>
+          <th>Created By</th>
+          <th>Created Date</th>
+          <th>Modified By</th>
+          <th>Modified Date</th>
+          <th>Public</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let d of dashboards">
+          <td>{{ d.name }}</td>
+          <td>{{ d.description }}</td>
+          <td>{{ d.createdBy }}</td>
+          <td>{{ d.createdDate }}</td>
+          <td>{{ d.modifiedBy }}</td>
+          <td>{{ d.modifiedDate }}</td>
+          <td>{{ d.public ? 'Yes' : 'No' }}</td>
+          <td><!-- actions --></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p *ngIf="dashboards.length === 0" class="no-rows">No Rows To Show</p>
+  </div>
+</div>
+
+
+dashboard.comp.css
+
+.manage-dashboard-container {
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header h2 {
+  margin: 0;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.dashboard-options {
+  display: flex;
+  gap: 20px;
+  margin: 20px 0;
+}
+
+.dashboard-option {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 20px;
+  width: 200px;
+  text-align: center;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.dashboard-option:hover {
+  background-color: #f0f0f0;
+}
+
+.icon {
+  font-size: 30px;
+  margin-bottom: 10px;
+}
+
+.dashboard-table table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.dashboard-table th, .dashboard-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+.dashboard-table th {
+  background-color: #f4f4f4;
+}
+
+.no-rows {
+  margin-top: 20px;
+  color: gray;
+}
+
+
+
+
