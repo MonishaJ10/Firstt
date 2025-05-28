@@ -545,3 +545,10 @@ ng generate component sidebar
 
 
 
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+  integrity="sha512-pap+pD1I6eZrY+yzKf8ImVuN+vQGzA9sF6+mRj7i9PNCClh1W8/Nq+MbzF0+pSBbe63mMKe0S2+SZX0oZPOdwg=="
+  crossorigin="anonymous"
+  referrerpolicy="no-referrer"
+/>
