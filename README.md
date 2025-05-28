@@ -1558,3 +1558,129 @@ manage.comp.css
     font-size: 18px;
   }
 }
+______________________________________________________________________________________________________________________________________________________________
+manage-dashboard.component.ts
+import { Component, EventEmitter, Output } from '@angular/core';
+import { CommonModule } from '@angular/common';
+
+@Component({
+  selector: 'app-manage-dashboard',
+  templateUrl: './manage-dashboard.component.html',
+  styleUrls: ['./manage-dashboard.component.css']
+})
+export class ManageDashboardComponent {
+  @Output() closeDashboard = new EventEmitter<void>();
+  @Output() selectDashboard = new EventEmitter<string>();
+
+  showBlankDashboard = false;
+  showInteractiveDashboard = false;
+
+  dashboards = [
+    {
+      id: 'blank',
+      name: 'Blank Dashboard',
+      icon: '📊',
+      description: 'Start with a blank canvas'
+    },
+    {
+      id: 'interactive',
+      name: 'Interactive Dashboard',
+      icon: '📈',
+      description: 'Pre-built interactive components'
+    }
+  ];
+
+  tableHeaders = ['Name', 'Description', 'Created By', 'Created Date', 'Modified By', 'Modified Date', 'Pu...', 'Acc...'];
+  tableData: any[] = []; // Will be populated with data in the future
+
+  onClose() {
+    this.closeDashboard.emit();
+  }
+
+  onSelectDashboard(dashboardType: string) {
+    this.selectDashboard.emit(dashboardType);
+  }
+
+  onNewDashboard() {
+    // Handle new dashboard creation
+    console.log('New Dashboard clicked');
+  }
+}
+
+
+manage-dashboard.component.html
+<div class="manage-dashboard-container">
+  <!-- Main Manage Dashboard View -->
+  <div *ngIf="!showBlankDashboard && !showInteractiveDashboard">
+    <!-- Header -->
+    <div class="header">
+      <h2 class="title">Manage Dashboard</h2>
+      <button class="close-btn" (click)="onClose()">×</button>
+    </div>
+
+    <!-- New Dashboard Button -->
+    <div class="new-dashboard-section">
+      <button class="new-dashboard-btn" (click)="onNewDashboard()">
+        <span class="plus-icon">+</span>
+        New Dashboard
+      </button>
+    </div>
+
+    <!-- Dashboard Types -->
+    <div class="dashboard-types">
+      <div 
+        class="dashboard-card" 
+        *ngFor="let dashboard of dashboards"
+        (click)="onSelectDashboard(dashboard.id)"
+      >
+        <div class="dashboard-icon">{{dashboard.icon}}</div>
+        <div class="dashboard-name">{{dashboard.name}}</div>
+      </div>
+    </div>
+
+    <!-- All Dashboards Section -->
+    <div class="all-dashboards-section">
+      <h3 class="section-title">All Dashboards</h3>
+      
+      <!-- Table -->
+      <div class="table-container">
+        <table class="dashboards-table">
+          <thead>
+            <tr>
+              <th *ngFor="let header of tableHeaders">{{header}}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngIf="tableData.length === 0" class="no-data-row">
+              <td [attr.colspan]="tableHeaders.length" class="no-data-cell">
+                No Rows To Show
+              </td>
+            </tr>
+            <!-- Future data rows will be rendered here -->
+            <tr *ngFor="let row of tableData">
+              <td *ngFor="let header of tableHeaders">
+                {{row[header.toLowerCase().replace(' ', '')]}}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Blank Dashboard View -->
+  <div *ngIf="showBlankDashboard">
+    <app-blank-dashboard></app-blank-dashboard>
+  </div>
+
+  <!-- Interactive Dashboard View -->
+  <div *ngIf="showInteractiveDashboard" class="dashboard-view">
+    <div class="dashboard-header">
+      <button class="back-btn" (click)="onBackToManage()">← Back to Manage</button>
+      <button class="close-btn" (click)="onClose()">×</button>
+    </div>
+    <!-- Add your interactive dashboard component here -->
+    <!-- <app-interactive-dashboard></app-interactive-dashboard> -->
+    <div class="placeholder">Interactive Dashboard Component will be rendered here</div>
+  </div>
+</div>
