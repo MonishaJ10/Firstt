@@ -865,159 +865,7 @@ export class AppComponent {
 }
 
 
----
-
-Let me know if you want to also:
-
-✅ Add real routing to use /inventory/manage-dashboard
-
-✅ Save dashboard data to localStorage or backend
-
-✅ Add styling with Angular Material
-
-
-Ready for the next step?
-
-
-&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
-dashboard.comp.html
-<div class="manage-dashboard-container">
-
-  <!-- Header with Title and Close Button -->
-  <div class="header">
-    <h2>Manage Dashboard</h2>
-    <button class="close-btn" (click)="closeManageDashboard()">✖</button>
-  </div>
-
-  <!-- New Dashboard Box Section -->
-  <div class="dashboard-options">
-    <div class="dashboard-option" (click)="selectDashboardType('blank')">
-      <div class="icon">&#128202;</div>
-      <p>Blank Dashboard</p>
-    </div>
-
-    <div class="dashboard-option" (click)="selectDashboardType('interactive')">
-      <div class="icon">&#128187;</div>
-      <p>Interactive Dashboard</p>
-    </div>
-  </div>
-
-  <!-- Dashboard Components Rendering -->
-  <ng-container *ngIf="selectedDashboardType === 'blank'">
-    <app-blank-dashboard (dashboardCreated)="refreshDashboardList()"></app-blank-dashboard>
-  </ng-container>
-
-  <ng-container *ngIf="selectedDashboardType === 'interactive'">
-    <app-interactive-dashboard (dashboardCreated)="refreshDashboardList()"></app-interactive-dashboard>
-  </ng-container>
-
-  <!-- Dashboard Table -->
-  <div class="dashboard-table">
-    <table *ngIf="dashboards.length > 0">
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Description</th>
-          <th>Created By</th>
-          <th>Created Date</th>
-          <th>Modified By</th>
-          <th>Modified Date</th>
-          <th>Public</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let d of dashboards">
-          <td>{{ d.name }}</td>
-          <td>{{ d.description }}</td>
-          <td>{{ d.createdBy }}</td>
-          <td>{{ d.createdDate }}</td>
-          <td>{{ d.modifiedBy }}</td>
-          <td>{{ d.modifiedDate }}</td>
-          <td>{{ d.public ? 'Yes' : 'No' }}</td>
-          <td><!-- actions --></td>
-        </tr>
-      </tbody>
-    </table>
-
-    <p *ngIf="dashboards.length === 0" class="no-rows">No Rows To Show</p>
-  </div>
-</div>
-
-
-dashboard.comp.css
-
-.manage-dashboard-container {
-  padding: 20px;
-  font-family: Arial, sans-serif;
-}
-
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.header h2 {
-  margin: 0;
-}
-
-.close-btn {
-  background: none;
-  border: none;
-  font-size: 20px;
-  cursor: pointer;
-}
-
-.dashboard-options {
-  display: flex;
-  gap: 20px;
-  margin: 20px 0;
-}
-
-.dashboard-option {
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  padding: 20px;
-  width: 200px;
-  text-align: center;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-.dashboard-option:hover {
-  background-color: #f0f0f0;
-}
-
-.icon {
-  font-size: 30px;
-  margin-bottom: 10px;
-}
-
-.dashboard-table table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
-}
-
-.dashboard-table th, .dashboard-table td {
-  border: 1px solid #ddd;
-  padding: 8px;
-  text-align: left;
-}
-
-.dashboard-table th {
-  background-color: #f4f4f4;
-}
-
-.no-rows {
-  margin-top: 20px;
-  color: gray;
-}
-
-
-Uuuuuuuuuuuuuuuuuuuuu
-
+--------------------------------------------------------------------------------------------
 blank-dashboard.component.html
 
 <div class="modal" [class.fullscreen]="isFullscreen">
@@ -1226,4 +1074,320 @@ export class BlankDashboardComponent {
     // You can also emit this data or call an API
   }
 }
+______________________________________________________________________________________________________________________________________________________________________________________________________
 
+
+blank-dashboard.component.ts
+
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-blank-dashboard',
+  templateUrl: './blank-dashboard.component.html',
+  styleUrls: ['./blank-dashboard.component.css']
+})
+export class BlankDashboardComponent {
+  isFullscreen = false;
+  currentStep = 0;
+
+  steps = ['Initial', 'Content', 'Layout', 'Review'];
+
+  formData = {
+    name: '',
+    description: '',
+    visibility: 'Public'
+  };
+
+  toggleFullscreen() {
+    this.isFullscreen = !this.isFullscreen;
+  }
+
+  closeModal() {
+    this.currentStep = 0;
+    alert('Manage Dashboard closed!');
+  }
+
+  nextStep() {
+    if (this.currentStep === 0 && !this.formData.name.trim()) {
+      alert('Please fill in the required "Name" field.');
+      return;
+    }
+    if (this.currentStep < this.steps.length - 1) {
+      this.currentStep++;
+    }
+  }
+
+  prevStep() {
+    if (this.currentStep > 0) {
+      this.currentStep--;
+    }
+  }
+
+  submit() {
+    alert('Dashboard submitted successfully!');
+    console.log('Submitted Data:', this.formData);
+  }
+}
+✅ blank-dashboard.component.html
+<div class="modal-container" [class.fullscreen]="isFullscreen">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="header-left">
+        <span class="material-symbols-outlined icon">dashboard</span>
+        <h2>New Dashboard</h2>
+      </div>
+      <div class="header-actions">
+        <button (click)="toggleFullscreen()" title="Fullscreen">🗖</button>
+        <button (click)="closeModal()" title="Close">✕</button>
+      </div>
+    </div>
+
+    <div class="step-tracker">
+      <div *ngFor="let step of steps; let i = index" class="step-item" [class.active]="i === currentStep">
+        <div class="step-circle">{{ i + 1 }}</div>
+        <span class="step-label">{{ step }}</span>
+      </div>
+    </div>
+
+    <div class="modal-content">
+      <!-- Step 1 -->
+      <form *ngIf="currentStep === 0" #dashboardForm="ngForm" class="form-section">
+        <div class="form-group">
+          <label>Name <span class="required">*</span></label>
+          <input type="text" [(ngModel)]="formData.name" name="name" placeholder="Add a name" required />
+        </div>
+
+        <div class="form-group">
+          <label>Description</label>
+          <textarea [(ngModel)]="formData.description" name="description" placeholder="Mention objective and purpose of dashboard"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Mark Dashboard As <span class="required">*</span></label>
+          <div class="radio-options">
+            <label>
+              <input type="radio" [(ngModel)]="formData.visibility" name="visibility" value="Public" checked />
+              <span class="custom-radio checked"></span> Public
+            </label>
+            <label>
+              <input type="radio" [(ngModel)]="formData.visibility" name="visibility" value="Private" />
+              <span class="custom-radio"></span> Private
+            </label>
+          </div>
+          <small>Select <strong>Private</strong> to assign this dashboard to one or more users or teams.</small>
+        </div>
+
+        <div class="nav-buttons">
+          <button type="button" class="btn secondary" (click)="closeModal()">Cancel</button>
+          <button type="button" class="btn primary" (click)="nextStep()">Next</button>
+        </div>
+      </form>
+
+      <!-- Step 2: Content -->
+      <div *ngIf="currentStep === 1">
+        <p><strong>Step 2:</strong> Add your dashboard content here...</p>
+        <div class="nav-buttons">
+          <button class="btn secondary" (click)="prevStep()">Back</button>
+          <button class="btn primary" (click)="nextStep()">Next</button>
+        </div>
+      </div>
+
+      <!-- Step 3: Layout -->
+      <div *ngIf="currentStep === 2">
+        <p><strong>Step 3:</strong> Choose your layout preferences...</p>
+        <div class="nav-buttons">
+          <button class="btn secondary" (click)="prevStep()">Back</button>
+          <button class="btn primary" (click)="nextStep()">Next</button>
+        </div>
+      </div>
+
+      <!-- Step 4: Review -->
+      <div *ngIf="currentStep === 3">
+        <p><strong>Step 4:</strong> Review and confirm your dashboard.</p>
+        <div class="nav-buttons">
+          <button class="btn secondary" (click)="prevStep()">Back</button>
+          <button class="btn primary" (click)="submit()">Submit</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+✅ blank-dashboard.component.css
+.modal-container {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-container.fullscreen .modal-box {
+  width: 95vw;
+  height: 95vh;
+}
+
+.modal-box {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 5px 30px rgba(0,0,0,0.3);
+  max-width: 800px;
+  width: 100%;
+  padding: 20px;
+  position: relative;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.header-left .icon {
+  font-size: 24px;
+  color: #555;
+}
+
+.header-actions button {
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 4px 8px;
+}
+
+.step-tracker {
+  display: flex;
+  gap: 25px;
+  margin: 20px 0;
+  align-items: center;
+}
+
+.step-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: gray;
+}
+
+.step-item.active {
+  font-weight: bold;
+  color: #0d9488;
+}
+
+.step-circle {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-color: #ccc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.step-item.active .step-circle {
+  background-color: #0d9488;
+  color: white;
+}
+
+.modal-content {
+  margin-top: 10px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+input[type="text"],
+textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+textarea {
+  height: 80px;
+}
+
+.radio-options {
+  display: flex;
+  gap: 20px;
+  margin-top: 10px;
+  align-items: center;
+}
+
+.radio-options input[type="radio"] {
+  display: none;
+}
+
+.custom-radio {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid #aaa;
+  border-radius: 50%;
+  margin-right: 5px;
+  vertical-align: middle;
+}
+
+.custom-radio.checked {
+  border-color: #0d9488;
+  background-color: #0d9488;
+  position: relative;
+}
+
+.custom-radio.checked::after {
+  content: '';
+  display: block;
+  width: 6px;
+  height: 6px;
+  margin: 3px auto;
+  background: white;
+  border-radius: 50%;
+}
+
+.required {
+  color: red;
+}
+
+.nav-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.btn {
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  border: none;
+}
+
+.btn.primary {
+  background-color: #0d9488;
+  color: white;
+}
+
+.btn.primary:hover {
+  background-color: #0f766e;
+}
+
+.btn.secondary {
+  background-color: #f3f4f6;
+  color: #333;
+  border: 1px solid #ccc;
+}
+
+.btn.secondary:hover {
+  background-color: #e5e7eb;
+}
