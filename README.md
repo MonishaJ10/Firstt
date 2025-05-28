@@ -552,3 +552,8 @@ ng generate component sidebar
   crossorigin="anonymous"
   referrerpolicy="no-referrer"
 />
+
+"styles": [
+  "src/styles.css",
+  "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+]
