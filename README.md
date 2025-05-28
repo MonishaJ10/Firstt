@@ -1080,17 +1080,23 @@ ________________________________________________________________________________
 blank-dashboard.component.ts
 
 import { Component } from '@angular/core';
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-blank-dashboard',
+  standalone: true,
   templateUrl: './blank-dashboard.component.html',
-  styleUrls: ['./blank-dashboard.component.css']
+  styleUrls: ['./blank-dashboard.component.css'],
+  imports: [CommonModule, FormsModule]  // ✅ Needed for ngIf, ngModel
 })
 export class BlankDashboardComponent {
+  showModal = true;  // ✅ Show modal initially for testing
   isFullscreen = false;
   currentStep = 0;
 
-  steps = ['Initial', 'Content', 'Layout', 'Review'];
+  steps = ['Details', 'Content', 'Layout', 'Review'];
 
   formData = {
     name: '',
@@ -1103,15 +1109,10 @@ export class BlankDashboardComponent {
   }
 
   closeModal() {
-    this.currentStep = 0;
-    alert('Manage Dashboard closed!');
+    this.showModal = false;
   }
 
   nextStep() {
-    if (this.currentStep === 0 && !this.formData.name.trim()) {
-      alert('Please fill in the required "Name" field.');
-      return;
-    }
     if (this.currentStep < this.steps.length - 1) {
       this.currentStep++;
     }
@@ -1124,12 +1125,14 @@ export class BlankDashboardComponent {
   }
 
   submit() {
-    alert('Dashboard submitted successfully!');
-    console.log('Submitted Data:', this.formData);
+    console.log('Submitting form:', this.formData);
+    this.closeModal(); // Auto close after submission
   }
 }
+
 ✅ blank-dashboard.component.html
-<div class="modal-container" [class.fullscreen]="isFullscreen">
+<!-- ✅ MODAL WRAPPED IN *ngIf="showModal" -->
+<div *ngIf="showModal" class="modal-container" [class.fullscreen]="isFullscreen">
   <div class="modal-box">
     <div class="modal-header">
       <div class="header-left">
@@ -1138,6 +1141,7 @@ export class BlankDashboardComponent {
       </div>
       <div class="header-actions">
         <button (click)="toggleFullscreen()" title="Fullscreen">🗖</button>
+        <!-- ✅ CLOSE ICON CALLS closeModal() -->
         <button (click)="closeModal()" title="Close">✕</button>
       </div>
     </div>
@@ -1178,12 +1182,13 @@ export class BlankDashboardComponent {
         </div>
 
         <div class="nav-buttons">
+          <!-- ✅ CANCEL BUTTON CALLS closeModal() -->
           <button type="button" class="btn secondary" (click)="closeModal()">Cancel</button>
           <button type="button" class="btn primary" (click)="nextStep()">Next</button>
         </div>
       </form>
 
-      <!-- Step 2: Content -->
+      <!-- Step 2 -->
       <div *ngIf="currentStep === 1">
         <p><strong>Step 2:</strong> Add your dashboard content here...</p>
         <div class="nav-buttons">
@@ -1192,7 +1197,7 @@ export class BlankDashboardComponent {
         </div>
       </div>
 
-      <!-- Step 3: Layout -->
+      <!-- Step 3 -->
       <div *ngIf="currentStep === 2">
         <p><strong>Step 3:</strong> Choose your layout preferences...</p>
         <div class="nav-buttons">
@@ -1201,7 +1206,7 @@ export class BlankDashboardComponent {
         </div>
       </div>
 
-      <!-- Step 4: Review -->
+      <!-- Step 4 -->
       <div *ngIf="currentStep === 3">
         <p><strong>Step 4:</strong> Review and confirm your dashboard.</p>
         <div class="nav-buttons">
@@ -1212,6 +1217,7 @@ export class BlankDashboardComponent {
     </div>
   </div>
 </div>
+
 ✅ blank-dashboard.component.css
 .modal-container {
   position: fixed;
