@@ -738,6 +738,52 @@ export class BlankDashboardComponent {
 }
 
 
+
+import { Component, Output, EventEmitter } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { DashboardService } from './dashboard.service';
+import { Dashboard } from './dashboard.model';
+
+@Component({
+  selector: 'app-blank-dashboard',
+  standalone: true,
+  imports: [FormsModule],
+  templateUrl: './blank-dashboard.component.html',
+})
+export class BlankDashboardComponent {
+  currentStep = 1;
+
+  dashboard: Omit<Dashboard, 'createdBy' | 'createdDate'> = {
+    name: '',
+    description: '',
+    public: true
+  };
+
+  @Output() dashboardCreated = new EventEmitter<void>();
+
+  constructor(private dashboardService: DashboardService) {}
+
+  nextStep() {
+    if (this.currentStep < 4) {
+      this.currentStep++;
+    } else {
+      this.saveDashboard();
+    }
+  }
+
+  saveDashboard() {
+    const newDashboard: Dashboard = {
+      ...this.dashboard,
+      createdBy: 'User1',
+      createdDate: new Date().toISOString(),
+    };
+    this.dashboardService.addDashboard(newDashboard);
+    this.dashboardCreated.emit();
+    this.currentStep = 1;
+    this.dashboard = { name: '', description: '', public: true };
+  }
+}
+
 ---
 
 ✅ File 5: blank-dashboard.component.html
