@@ -1488,3 +1488,26 @@ manage-dashboard.component.html
     <div class="placeholder">Interactive Dashboard Component will be rendered here</div>
   </div>
 </div>
+
+
+app.comp.css
+.layout {
+  display: flex;
+  justify-content: space-between;
+}
+
+.layout .content {
+  flex-grow: 1;
+  margin-left: 16px; /* Optional: Add spacing between sidebar and content */
+}
+
+.layout app-sidebar, .layout app-inventory-sidebar {
+  width: 250px; /* Sidebar width */
+  flex-shrink: 0;
+}
+
+.layout .content {
+  padding: 20px;
+  overflow-y: auto; /* To avoid overflow issues */
+}
+
