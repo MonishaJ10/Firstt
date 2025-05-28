@@ -1016,5 +1016,214 @@ dashboard.comp.css
 }
 
 
+Uuuuuuuuuuuuuuuuuuuuu
 
+blank-dashboard.component.html
+
+<div class="modal" [class.fullscreen]="isFullscreen">
+  <div class="modal-header">
+    <h2>New Dashboard</h2>
+    <div class="modal-actions">
+      <button (click)="toggleFullscreen()">🗖</button>
+      <button (click)="closeModal()">✕</button>
+    </div>
+  </div>
+
+  <div class="step-indicator">
+    <div *ngFor="let step of steps; let i = index"
+         [class.active]="i === currentStep"
+         class="step">
+      {{ i + 1 }} {{ step }}
+    </div>
+  </div>
+
+  <div class="modal-content">
+    <!-- Step 1 -->
+    <form *ngIf="currentStep === 0" #dashboardForm="ngForm">
+      <label for="name">Name<span class="required">*</span></label>
+      <input type="text" id="name" name="name" [(ngModel)]="formData.name" required placeholder="Add a name">
+
+      <label for="description">Description</label>
+      <input type="text" id="description" name="description" [(ngModel)]="formData.description" placeholder="Mention objective and purpose of dashboard">
+
+      <label>Mark Dashboard As</label>
+      <div class="radio-group">
+        <label><input type="radio" name="visibility" value="Public" [(ngModel)]="formData.visibility" checked> Public</label>
+        <label><input type="radio" name="visibility" value="Private" [(ngModel)]="formData.visibility"> Private</label>
+      </div>
+      <small>Select <strong>Private</strong> to assign this dashboard to one or more users or teams.</small>
+
+      <div class="navigation-buttons">
+        <button type="button" (click)="nextStep()">Next</button>
+      </div>
+    </form>
+
+    <!-- Step 2 -->
+    <div *ngIf="currentStep === 1">
+      <p><strong>Step 2:</strong> Add your dashboard content here...</p>
+      <div class="navigation-buttons">
+        <button (click)="prevStep()">Back</button>
+        <button (click)="nextStep()">Next</button>
+      </div>
+    </div>
+
+    <!-- Step 3 -->
+    <div *ngIf="currentStep === 2">
+      <p><strong>Step 3:</strong> Choose your layout preferences...</p>
+      <div class="navigation-buttons">
+        <button (click)="prevStep()">Back</button>
+        <button (click)="nextStep()">Next</button>
+      </div>
+    </div>
+
+    <!-- Step 4 -->
+    <div *ngIf="currentStep === 3">
+      <p><strong>Step 4:</strong> Review and confirm your dashboard.</p>
+      <div class="navigation-buttons">
+        <button (click)="prevStep()">Back</button>
+        <button (click)="submit()">Submit</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+---
+
+🎨 blank-dashboard.component.css
+
+.modal {
+  width: 600px;
+  margin: 30px auto;
+  border: 1px solid #ccc;
+  background: #fff;
+  border-radius: 6px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  overflow: hidden;
+  padding: 20px;
+}
+
+.modal.fullscreen {
+  width: 95vw;
+  height: 95vh;
+  position: fixed;
+  top: 2.5vh;
+  left: 2.5vw;
+  z-index: 1000;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-actions button {
+  margin-left: 5px;
+  cursor: pointer;
+}
+
+.step-indicator {
+  display: flex;
+  justify-content: space-between;
+  margin: 15px 0;
+}
+
+.step {
+  flex: 1;
+  text-align: center;
+  padding: 5px;
+  background: #eee;
+  border-radius: 4px;
+}
+
+.step.active {
+  background-color: #2196f3;
+  color: #fff;
+  font-weight: bold;
+}
+
+.modal-content {
+  margin-top: 15px;
+}
+
+input[type="text"] {
+  width: 100%;
+  margin: 5px 0 10px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.radio-group {
+  display: flex;
+  gap: 20px;
+  margin: 10px 0;
+}
+
+.required {
+  color: red;
+}
+
+.navigation-buttons {
+  margin-top: 15px;
+  display: flex;
+  justify-content: space-between;
+}
+
+
+---
+
+⚙️ blank-dashboard.component.ts
+
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-blank-dashboard',
+  templateUrl: './blank-dashboard.component.html',
+  styleUrls: ['./blank-dashboard.component.css']
+})
+export class BlankDashboardComponent {
+  isFullscreen = false;
+  currentStep = 0;
+
+  steps = ['Initial', 'Content', 'Layout', 'Review'];
+
+  formData = {
+    name: '',
+    description: '',
+    visibility: 'Public'
+  };
+
+  toggleFullscreen() {
+    this.isFullscreen = !this.isFullscreen;
+  }
+
+  closeModal() {
+    // You can add logic to hide or destroy the component/modal
+    alert('Modal closed!');
+  }
+
+  nextStep() {
+    if (this.currentStep === 0 && !this.formData.name.trim()) {
+      alert('Please fill in the required "Name" field.');
+      return;
+    }
+    if (this.currentStep < this.steps.length - 1) {
+      this.currentStep++;
+    }
+  }
+
+  prevStep() {
+    if (this.currentStep > 0) {
+      this.currentStep--;
+    }
+  }
+
+  submit() {
+    alert('Dashboard submitted successfully!');
+    console.log('Submitted Data:', this.formData);
+    // You can also emit this data or call an API
+  }
+}
 
