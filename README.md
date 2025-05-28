@@ -690,141 +690,6 @@ export class ManageDashboardComponent {
 
 ---
 
-✅ File 4: blank-dashboard.component.ts
-
-📁 src/app/pages/inventory-configuration/manage-dashboard/blank-dashboard.component.ts
-
-import { Component, Output, EventEmitter } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { DashboardService } from './dashboard.service';
-
-@Component({
-  selector: 'app-blank-dashboard',
-  standalone: true,
-  imports: [FormsModule],
-  templateUrl: './blank-dashboard.component.html',
-})
-export class BlankDashboardComponent {
-  currentStep = 1;
-  dashboard = {
-    name: '',
-    description: '',
-    public: true
-  };
-
-  @Output() dashboardCreated = new EventEmitter<void>();
-
-  constructor(private dashboardService: DashboardService) {}
-
-  nextStep() {
-    if (this.currentStep < 4) {
-      this.currentStep++;
-    } else {
-      this.saveDashboard();
-    }
-  }
-
-  saveDashboard() {
-    const newDashboard = {
-      ...this.dashboard,
-      createdBy: 'User1',
-      createdDate: new Date().toISOString(),
-    };
-    this.dashboardService.addDashboard(newDashboard);
-    this.dashboardCreated.emit();
-    this.currentStep = 1;
-    this.dashboard = { name: '', description: '', public: true };
-  }
-}
-
-
-
-import { Component, Output, EventEmitter } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { DashboardService } from './dashboard.service';
-import { Dashboard } from './dashboard.model';
-
-@Component({
-  selector: 'app-blank-dashboard',
-  standalone: true,
-  imports: [FormsModule],
-  templateUrl: './blank-dashboard.component.html',
-})
-export class BlankDashboardComponent {
-  currentStep = 1;
-
-  dashboard: Omit<Dashboard, 'createdBy' | 'createdDate'> = {
-    name: '',
-    description: '',
-    public: true
-  };
-
-  @Output() dashboardCreated = new EventEmitter<void>();
-
-  constructor(private dashboardService: DashboardService) {}
-
-  nextStep() {
-    if (this.currentStep < 4) {
-      this.currentStep++;
-    } else {
-      this.saveDashboard();
-    }
-  }
-
-  saveDashboard() {
-    const newDashboard: Dashboard = {
-      ...this.dashboard,
-      createdBy: 'User1',
-      createdDate: new Date().toISOString(),
-    };
-    this.dashboardService.addDashboard(newDashboard);
-    this.dashboardCreated.emit();
-    this.currentStep = 1;
-    this.dashboard = { name: '', description: '', public: true };
-  }
-}
-
----
-
-✅ File 5: blank-dashboard.component.html
-
-📁 src/app/pages/inventory-configuration/manage-dashboard/blank-dashboard.component.html
-
-<div *ngIf="currentStep === 1">
-  <h3>Step 1: Basic Info</h3>
-  <input placeholder="Dashboard Name" [(ngModel)]="dashboard.name" />
-  <input placeholder="Description" [(ngModel)]="dashboard.description" />
-  <label>
-    <input type="radio" [(ngModel)]="dashboard.public" [value]="true" /> Public
-  </label>
-  <label>
-    <input type="radio" [(ngModel)]="dashboard.public" [value]="false" /> Private
-  </label>
-  <button (click)="nextStep()">Next</button>
-</div>
-
-<div *ngIf="currentStep === 2">
-  <h3>Step 2: Content</h3>
-  <!-- Add form fields for content later -->
-  <button (click)="nextStep()">Next</button>
-</div>
-
-<div *ngIf="currentStep === 3">
-  <h3>Step 3: Layout</h3>
-  <!-- Add layout options later -->
-  <button (click)="nextStep()">Next</button>
-</div>
-
-<div *ngIf="currentStep === 4">
-  <h3>Step 4: Review</h3>
-  <p><strong>Name:</strong> {{dashboard.name}}</p>
-  <p><strong>Description:</strong> {{dashboard.description}}</p>
-  <p><strong>Visibility:</strong> {{dashboard.public ? 'Public' : 'Private'}}</p>
-  <button (click)="nextStep()">Create</button>
-</div>
-
-
----
 
 ✅ File 6: interactive-dashboard.component.ts
 
@@ -1396,4 +1261,300 @@ textarea {
 
 .btn.secondary:hover {
   background-color: #e5e7eb;
+}
+_____________________________________________________________________________________________________________________________________________________________________
+manage-dashboard.comp.ts
+import { Component, EventEmitter, Output } from '@angular/core';
+
+@Component({
+  selector: 'app-manage-dashboard',
+  templateUrl: './manage-dashboard.component.html',
+  styleUrls: ['./manage-dashboard.component.css']
+})
+export class ManageDashboardComponent {
+  @Output() closeDashboard = new EventEmitter<void>();
+  @Output() selectDashboard = new EventEmitter<string>();
+
+  dashboards = [
+    {
+      id: 'blank',
+      name: 'Blank Dashboard',
+      icon: '📊',
+      description: 'Start with a blank canvas'
+    },
+    {
+      id: 'interactive',
+      name: 'Interactive Dashboard',
+      icon: '📈',
+      description: 'Pre-built interactive components'
+    }
+  ];
+
+  tableHeaders = ['Name', 'Description', 'Created By', 'Created Date', 'Modified By', 'Modified Date', 'Pu...', 'Acc...'];
+  tableData: any[] = []; // Will be populated with data in the future
+
+  onClose() {
+    this.closeDashboard.emit();
+  }
+
+  onSelectDashboard(dashboardType: string) {
+    this.selectDashboard.emit(dashboardType);
+  }
+
+  onNewDashboard() {
+    // Handle new dashboard creation
+    console.log('New Dashboard clicked');
+  }
+}
+manage-dashboard.comp.html
+<div class="manage-dashboard-container">
+  <!-- Header -->
+  <div class="header">
+    <h2 class="title">Manage Dashboard</h2>
+    <button class="close-btn" (click)="onClose()">×</button>
+  </div>
+
+  <!-- New Dashboard Button -->
+  <div class="new-dashboard-section">
+    <button class="new-dashboard-btn" (click)="onNewDashboard()">
+      <span class="plus-icon">+</span>
+      New Dashboard
+    </button>
+  </div>
+
+  <!-- Dashboard Types -->
+  <div class="dashboard-types">
+    <div 
+      class="dashboard-card" 
+      *ngFor="let dashboard of dashboards"
+      (click)="onSelectDashboard(dashboard.id)"
+    >
+      <div class="dashboard-icon">{{dashboard.icon}}</div>
+      <div class="dashboard-name">{{dashboard.name}}</div>
+    </div>
+  </div>
+
+  <!-- All Dashboards Section -->
+  <div class="all-dashboards-section">
+    <h3 class="section-title">All Dashboards</h3>
+    
+    <!-- Table -->
+    <div class="table-container">
+      <table class="dashboards-table">
+        <thead>
+          <tr>
+            <th *ngFor="let header of tableHeaders">{{header}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngIf="tableData.length === 0" class="no-data-row">
+            <td [attr.colspan]="tableHeaders.length" class="no-data-cell">
+              No Rows To Show
+            </td>
+          </tr>
+          <!-- Future data rows will be rendered here -->
+          <tr *ngFor="let row of tableData">
+            <td *ngFor="let header of tableHeaders">
+              {{row[header.toLowerCase().replace(' ', '')]}}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+manage.comp.css
+.manage-dashboard-container {
+  padding: 20px;
+  background-color: #f5f5f5;
+  min-height: 100vh;
+  font-family: Arial, sans-serif;
+}
+
+/* Header */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  background-color: white;
+  padding: 15px 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: #333;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #666;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+}
+
+.close-btn:hover {
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+/* New Dashboard Section */
+.new-dashboard-section {
+  margin-bottom: 30px;
+}
+
+.new-dashboard-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.new-dashboard-btn:hover {
+  background-color: #0056b3;
+}
+
+.plus-icon {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+/* Dashboard Types */
+.dashboard-types {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
+.dashboard-card {
+  background-color: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 30px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  min-width: 150px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-card:hover {
+  border-color: #007bff;
+  box-shadow: 0 4px 8px rgba(0, 123, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+.dashboard-icon {
+  font-size: 40px;
+  margin-bottom: 15px;
+}
+
+.dashboard-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+}
+
+/* All Dashboards Section */
+.all-dashboards-section {
+  background-color: white;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.section-title {
+  margin: 0 0 20px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+}
+
+/* Table */
+.table-container {
+  overflow-x: auto;
+}
+
+.dashboards-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+}
+
+.dashboards-table th {
+  background-color: #f8f9fa;
+  padding: 12px 16px;
+  text-align: left;
+  font-weight: 600;
+  color: #555;
+  border-bottom: 2px solid #e9ecef;
+  font-size: 13px;
+}
+
+.dashboards-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #e9ecef;
+  color: #333;
+  font-size: 13px;
+}
+
+.dashboards-table tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+.no-data-row {
+  background-color: transparent !important;
+}
+
+.no-data-cell {
+  text-align: center;
+  color: #666;
+  font-style: italic;
+  padding: 40px 16px !important;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .manage-dashboard-container {
+    padding: 15px;
+  }
+  
+  .dashboard-types {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .dashboard-card {
+    min-width: auto;
+  }
+  
+  .header {
+    padding: 12px 15px;
+  }
+  
+  .title {
+    font-size: 18px;
+  }
 }
