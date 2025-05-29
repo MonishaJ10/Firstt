@@ -1510,4 +1510,147 @@ app.comp.css
   padding: 20px;
   overflow-y: auto; /* To avoid overflow issues */
 }
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+
+✅ Updated blank-dashboard.component.ts
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+
+@Component({
+  selector: 'app-blank-dashboard',
+  standalone: true,
+  templateUrl: './blank-dashboard.component.html',
+  styleUrls: ['./blank-dashboard.component.css'],
+  imports: [CommonModule, FormsModule]
+})
+export class BlankDashboardComponent {
+  showModal = true;
+  isFullscreen = false;
+  currentStep = 0;
+
+  steps = ['Details', 'Content', 'Layout', 'Review'];
+
+  formData = {
+    name: '',
+    description: '',
+    visibility: 'Public'
+  };
+
+  selectedChart = 'bar';  // Default selected chart type
+
+  toggleFullscreen() {
+    this.isFullscreen = !this.isFullscreen;
+  }
+
+  closeModal() {
+    this.showModal = false;
+  }
+
+  nextStep() {
+    if (this.currentStep < this.steps.length - 1) {
+      this.currentStep++;
+    }
+  }
+
+  prevStep() {
+    if (this.currentStep > 0) {
+      this.currentStep--;
+    }
+  }
+
+  submit() {
+    console.log('Submitting form:', this.formData);
+    this.closeModal();
+  }
+
+  setChartType(type: string) {
+    this.selectedChart = type;
+  }
+}
+✅ Updated HTML (Only the Step 2 section of blank-dashboard.component.html)
+<!-- Step 2 -->
+<div *ngIf="currentStep === 1" class="content-step">
+  <div class="sidebar">
+    <h4>Select Card</h4>
+    <ul>
+      <li [class.active]="selectedChart === 'bar'" (click)="setChartType('bar')">A. Case Queue by Data Element (Bar Chart)</li>
+      <li [class.active]="selectedChart === 'pie'" (click)="setChartType('pie')">B. Case Queue by Data Element (Pie Chart)</li>
+    </ul>
+  </div>
+  <div class="chart-preview">
+    <ng-container [ngSwitch]="selectedChart">
+      <div *ngSwitchCase="'bar'">
+        <h3>Bar Chart Preview</h3>
+        <!-- Simulated chart block -->
+        <div class="chart-bar">[Bar Chart Placeholder]</div>
+      </div>
+      <div *ngSwitchCase="'pie'">
+        <h3>Pie Chart Preview</h3>
+        <!-- Simulated chart block -->
+        <div class="chart-pie">[Pie Chart Placeholder]</div>
+      </div>
+    </ng-container>
+    <div class="nav-buttons">
+      <button class="btn secondary" (click)="prevStep()">Back</button>
+      <button class="btn primary" (click)="nextStep()">Next</button>
+    </div>
+  </div>
+</div>
+
+css
+.content-step {
+  display: flex;
+  gap: 20px;
+}
+
+.sidebar {
+  width: 250px;
+  background: #f9fafb;
+  padding: 15px;
+  border-right: 1px solid #ddd;
+}
+
+.sidebar h4 {
+  margin-bottom: 10px;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar li {
+  padding: 8px;
+  cursor: pointer;
+  border-radius: 4px;
+  margin-bottom: 6px;
+}
+
+.sidebar li:hover,
+.sidebar li.active {
+  background-color: #0d9488;
+  color: white;
+}
+
+.chart-preview {
+  flex: 1;
+  padding: 15px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+}
+
+.chart-bar,
+.chart-pie {
+  height: 200px;
+  background: #e0f2f1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  color: #0d9488;
+  margin-top: 10px;
+  border-radius: 4px;
+}
 
