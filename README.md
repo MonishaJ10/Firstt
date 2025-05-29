@@ -1654,3 +1654,128 @@ css
   border-radius: 4px;
 }
 
+
+<!-- Step 2 -->
+<div *ngIf="currentStep === 1" class="content-step">
+  <div class="sidebar">
+    <h4>Select Card</h4>
+    <ul>
+      <li [class.active]="selectedChart === 'bar'" (click)="setChartType('bar')">
+        A. Case Queue by Data Element (Bar Chart)
+      </li>
+      <li [class.active]="selectedChart === 'pie'" (click)="setChartType('pie')">
+        B. Case Queue by Data Element (Pie Chart)
+      </li>
+    </ul>
+  </div>
+
+  <div class="chart-preview">
+    <ng-container [ngSwitch]="selectedChart">
+      <div *ngSwitchCase="'bar'">
+        <img src="assets/images/bar-chart-preview.png" alt="Bar Chart" style="width: 100%; max-width: 300px;" />
+      </div>
+      <div *ngSwitchCase="'pie'">
+        <img src="assets/images/pie-chart-preview.png" alt="Pie Chart" style="width: 100%; max-width: 300px;" />
+      </div>
+    </ng-container>
+
+    <div class="form-section">
+      <h4>Configure Card: Case Queue by Data Element of type {{ selectedChart === 'bar' ? 'Bar Chart' : 'Pie Chart' }}</h4>
+
+      <label>Description</label>
+      <p>Case Queue by Data Element of type {{ selectedChart === 'bar' ? 'Bar Chart' : 'Pie Chart' }}</p>
+
+      <label>Title *</label>
+      <input type="text" [(ngModel)]="title" [value]="'Case Queue by Data Element of type ' + (selectedChart === 'bar' ? 'Bar Chart' : 'Pie Chart')" />
+
+      <label>Model *</label>
+      <select [(ngModel)]="model">
+        <option *ngFor="let option of modelOptions" [value]="option">{{ option }}</option>
+      </select>
+
+      <label>Group By *</label>
+      <select [(ngModel)]="groupBy">
+        <option *ngFor="let group of groupByOptions" [value]="group">{{ group }}</option>
+      </select>
+
+      <label>Aggregation</label>
+      <p>Aggregation Type</p>
+
+      <label>Aggregation Field</label>
+      <select [(ngModel)]="aggregationField">
+        <option *ngFor="let field of aggregationFields" [value]="field">{{ field }}</option>
+      </select>
+
+      <button class="btn add-btn" (click)="addCard()">Add</button>
+    </div>
+
+    <div class="nav-buttons">
+      <button class="btn secondary" (click)="prevStep()">Back</button>
+      <button class="btn primary" (click)="nextStep()">Next</button>
+    </div>
+  </div>
+</div>
+
+ts
+selectedChart = 'bar';
+title = '';
+model = '';
+groupBy = '';
+aggregationField = '';
+
+modelOptions = ['Germany_Holdings', 'Luxembourg_Holdings', 'Monacco_Holdings'];
+groupByOptions = ['Amount', 'Case Id', 'Create Date', 'Custom Value'];
+aggregationFields = ['count', 'sum'];
+
+setChartType(type: string): void {
+  this.selectedChart = type;
+  this.title = `Case Queue by Data Element of type ${type === 'bar' ? 'Bar Chart' : 'Pie Chart'}`;
+}
+
+addCard(): void {
+  // Validation logic and storing form values
+  console.log('Card added:', {
+    chartType: this.selectedChart,
+    title: this.title,
+    model: this.model,
+    groupBy: this.groupBy,
+    aggregationField: this.aggregationField
+  });
+}
+
+css
+.chart-image {
+  max-width: 100%;
+  height: auto;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.chart-details {
+  margin-top: 20px;
+  background: #f9fafb;
+  padding: 20px;
+  border-radius: 8px;
+  border: 1px solid #eee;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+input, select {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.add-btn {
+  background-color: #4caf50;
+  color: white;
+  margin-top: 10px;
+}
+
+
