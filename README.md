@@ -1777,5 +1777,389 @@ input, select {
   color: white;
   margin-top: 10px;
 }
+------------------------------------------------------------------------------------------------------------------------
+✅ Updated HTML for Initial and Content Pages:
+<!-- Step 1 -->
+<form *ngIf="currentStep === 0" #dashboardForm="ngForm" class="form-section">
+  <div class="form-group">
+    <label>Name <span class="required">*</span></label>
+    <input type="text" [(ngModel)]="formData.name" name="name" placeholder="Add a name" required />
+  </div>
+
+  <div class="form-group">
+    <label>Description</label>
+    <textarea [(ngModel)]="formData.description" name="description" placeholder="Mention description..."></textarea>
+  </div>
+
+  <div class="form-group">
+    <label>Mark Dashboard As <span class="required">*</span></label>
+    <div class="radio-options">
+      <label>
+        <input type="radio" [(ngModel)]="formData.visibility" name="visibility" value="Public" />
+        <span class="custom-radio"></span> Public
+      </label>
+      <label>
+        <input type="radio" [(ngModel)]="formData.visibility" name="visibility" value="Private" />
+        <span class="custom-radio"></span> Private
+      </label>
+    </div>
+    <small>Select <strong>Private</strong> to assign this dashboard to one or more users or teams.</small>
+  </div>
+
+  <div class="nav-buttons">
+    <button type="button" class="btn secondary" (click)="closeModal()">Cancel</button>
+    <button type="button" class="btn primary" (click)="nextStep()">Next</button>
+  </div>
+</form>
+
+<!-- Step 2 -->
+<div *ngIf="currentStep === 1" class="content-step" style="display: flex;">
+  <div class="sidebar" style="flex: 1; padding: 1rem;">
+    <h4>Select Card</h4>
+    <ul>
+      <li [class.active]="selectedChart === 'bar'" (click)="setChartType('bar')">Case Queue by Data Element (Bar Chart)</li>
+      <li [class.active]="selectedChart === 'pie'" (click)="setChartType('pie')">Case Queue by Data Element (Pie Chart)</li>
+    </ul>
+  </div>
+
+  <div class="chart-preview" style="flex: 2; padding: 1rem;">
+    <ng-container [ngSwitch]="selectedChart">
+      <div *ngSwitchCase="'bar'">
+        <h3>Bar Chart Preview</h3>
+        <div class="chart-bar">[Bar Chart Placeholder]</div>
+      </div>
+      <div *ngSwitchCase="'pie'">
+        <h3>Pie Chart Preview</h3>
+        <div class="chart-pie">[Pie Chart Placeholder]</div>
+      </div>
+    </ng-container>
+
+    <div class="form-section" style="max-height: 300px; overflow-y: auto; margin-top: 1rem;">
+      <h4>Configure Card: Case Queue by Data Element of type {{ selectedChart === 'bar' ? 'Bar Chart' : 'Pie Chart' }}</h4>
+
+      <label>Title <span class="required">*</span></label>
+      <input type="text" [(ngModel)]="title" name="title" required />
+
+      <label>Model <span class="required">*</span></label>
+      <select [(ngModel)]="model" name="model" required>
+        <option *ngFor="let option of modelOptions" [value]="option">{{ option }}</option>
+      </select>
+
+      <label>Group By <span class="required">*</span></label>
+      <select [(ngModel)]="groupBy" name="groupBy" required>
+        <option *ngFor="let group of groupByOptions" [value]="group">{{ group }}</option>
+      </select>
+
+      <label>Aggregation</label>
+      <select [(ngModel)]="aggregation" name="aggregation">
+        <option *ngFor="let agg of aggregationTypes" [value]="agg">{{ agg }}</option>
+      </select>
+
+      <label>Aggregation Field</label>
+      <select [(ngModel)]="aggregationField" name="aggregationField">
+        <option *ngFor="let field of aggregationFields" [value]="field">{{ field }}</option>
+      </select>
+
+      <button class="btn add-btn" style="margin-top: 10px;" (click)="addCard()">Add</button>
+    </div>
+
+    <div class="nav-buttons" style="margin-top: 20px;">
+      <button class="btn secondary" (click)="prevStep()">Back to Initial</button>
+      <button class="btn primary" (click)="nextStep()">Next to Layout</button>
+    </div>
+  </div>
+</div>
+
+✅ Updated TypeScript Changes:
+Update your BlankDashboardComponent class with these fixes:
+export class BlankDashboardComponent {
+  showModal = true;
+  isFullscreen = false;
+  currentStep = 0;
+
+  steps = ['Initial', 'Content', 'Layout', 'Review'];
+
+  formData = {
+    name: '',
+    description: '',
+    visibility: 'Public'
+  };
+
+  selectedChart = 'bar';
+  title = '';
+  model = '';
+  groupBy = '';
+  aggregation = '';
+  aggregationField = '';
+
+  modelOptions = ['Germany_Holdings', 'Luxembourg_Holdings', 'Monacco_Holdings'];
+  groupByOptions = ['Amount', 'Case Id', 'Create Date', 'Custom Value'];
+  aggregationTypes = ['Count', 'Sum', 'Average', 'Max', 'Min']; // Dummy values
+  aggregationFields = ['Total Amount', 'Case Number', 'Score']; // Dummy values
+
+  toggleFullscreen() {
+    this.isFullscreen = !this.isFullscreen;
+  }
+
+  closeModal() {
+    this.showModal = false;
+    this.dashboardClose?.emit();
+  }
+
+  nextStep() {
+    if (this.currentStep === 0 && !this.formData.name.trim()) {
+      alert('Please fill in the required "Name" field.');
+      return;
+    }
+    if (this.currentStep < this.steps.length - 1) {
+      this.currentStep++;
+    }
+  }
+
+  prevStep() {
+    if (this.currentStep > 0) {
+      this.currentStep--;
+    }
+  }
+
+  submit() {
+    alert('Dashboard submitted successfully!');
+    console.log('Submitted Data:', this.formData);
+  }
+
+  setChartType(type: string): void {
+    this.selectedChart = type;
+    this.title = `Case Queue by Data Element of type ${type === 'bar' ? 'Bar Chart' : 'Pie Chart'}`;
+  }
+
+  addCard(): void {
+    // You may add validation here
+    console.log('Card added:', {
+      chartType: this.selectedChart,
+      title: this.title,
+      model: this.model,
+      groupBy: this.groupBy,
+      aggregation: this.aggregation,
+      aggregationField: this.aggregationField
+    });
+  }
+}
+
+
+/* Generic Modal Styles */
+.modal-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-box {
+  background: #fff;
+  width: 90%;
+  max-width: 1000px;
+  max-height: 90vh;
+  overflow: auto;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+}
+
+.fullscreen .modal-box {
+  width: 100%;
+  height: 100%;
+  border-radius: 0;
+}
+
+/* Header */
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.header-actions button {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+/* Step Tracker */
+.step-tracker {
+  display: flex;
+  justify-content: space-between;
+  margin: 20px 0;
+}
+
+.step-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  position: relative;
+}
+
+.step-circle {
+  width: 30px;
+  height: 30px;
+  background: #ccc;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.step-item.active .step-circle {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.step-label {
+  margin-top: 5px;
+  font-size: 12px;
+}
+
+/* Form Section */
+.form-section {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.required {
+  color: red;
+}
+
+/* Radio Buttons */
+.radio-options {
+  display: flex;
+  gap: 20px;
+}
+
+.radio-options label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* Buttons */
+.nav-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.btn {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn.primary {
+  background-color: #007bff;
+  color: white;
+}
+
+.btn.secondary {
+  background-color: #ccc;
+  color: black;
+}
+
+.btn.add-btn {
+  background-color: green;
+  color: white;
+}
+
+/* Step 2 - Content */
+.content-step {
+  display: flex;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.sidebar {
+  width: 30%;
+  background: #f8f8f8;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.sidebar ul {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.sidebar li {
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.sidebar li.active {
+  background-color: #007bff;
+  color: white;
+}
+
+.chart-preview {
+  width: 70%;
+  overflow-y: auto;
+  max-height: 400px;
+}
+
+.chart-bar,
+.chart-pie {
+  background-color: #e0e0e0;
+  height: 200px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Inputs and selects */
+input[type="text"],
+textarea,
+select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* Responsive Fix */
+@media (max-width: 768px) {
+  .content-step {
+    flex-direction: column;
+  }
+
+  .sidebar,
+  .chart-preview {
+    width: 100%;
+  }
+
+  .chart-preview {
+    max-height: unset;
+  }
+}
 
 
