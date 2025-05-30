@@ -2163,3 +2163,69 @@ select {
 }
 
 
+_________________________________________________________________________________________________
+✅ Step 3 & 4 — Updated Code
+🔧 Add to blank-dashboard.component.html (replace step 3 and 4 blocks):
+
+<!-- Step 3: Layout -->
+<div *ngIf="currentStep === 2" class="content-step">
+  <h4>Layout Preview</h4>
+  <div class="chart-preview">
+    <ng-container [ngSwitch]="selectedChart">
+      <div *ngSwitchCase="'bar'">
+        <img src="assets/images/bar-chart-preview.png" alt="Bar Chart" style="width: 100%; max-width: 400px;" />
+      </div>
+      <div *ngSwitchCase="'pie'">
+        <img src="assets/images/pie-chart-preview.png" alt="Pie Chart" style="width: 100%; max-width: 400px;" />
+      </div>
+    </ng-container>
+  </div>
+  <div class="nav-buttons">
+    <button class="btn secondary" (click)="prevStep()">Back</button>
+    <button class="btn primary" (click)="nextStep()">Next</button>
+  </div>
+</div>
+
+<!-- Step 4: Review -->
+<div *ngIf="currentStep === 3" class="content-step">
+  <h4>Review & Confirm</h4>
+  <div class="review-section">
+    <h5>Step 1: General Info</h5>
+    <p><strong>Name:</strong> {{ formData.name }}</p>
+    <p><strong>Description:</strong> {{ formData.description || 'N/A' }}</p>
+    <p><strong>Visibility:</strong> {{ formData.visibility }}</p>
+
+    <h5>Step 2: Chart Configuration</h5>
+    <p><strong>Chart Type:</strong> {{ selectedChart === 'bar' ? 'Bar Chart' : 'Pie Chart' }}</p>
+    <p><strong>Title:</strong> {{ title }}</p>
+    <p><strong>Model:</strong> {{ model }}</p>
+    <p><strong>Group By:</strong> {{ groupBy }}</p>
+    <p><strong>Aggregation Type:</strong> {{ aggregationType }}</p>
+    <p><strong>Aggregation Field:</strong> {{ aggregationField }}</p>
+  </div>
+
+  <div class="nav-buttons">
+    <button class="btn secondary" (click)="prevStep()">Back</button>
+    <button class="btn primary" (click)="submit()">Finish</button>
+  </div>
+</div>
+
+ In blank-dashboard.component.ts — Add missing property
+Inside your BlankDashboardComponent class, add this line:
+aggregationType = '';
+aggregationTypes = ['Average', 'Max', 'Min', 'Median']; // Already assumed you added this earlier
+
+submit() {
+  alert('Dashboard submitted successfully!');
+  console.log('Submitted Data:', {
+    formData: this.formData,
+    chartType: this.selectedChart,
+    title: this.title,
+    model: this.model,
+    groupBy: this.groupBy,
+    aggregationType: this.aggregationType,
+    aggregationField: this.aggregationField
+  });
+}
+
+
