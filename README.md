@@ -2180,3 +2180,55 @@ deleteDashboard(dashboard: any) {
     });
   }
 }
+
+
+
+@Input() editData: any;
+
+ngOnInit() {
+  if (this.editData) {
+    this.formData.name = this.editData.name;
+    this.formData.description = this.editData.description;
+    this.formData.visibility = this.editData.public ? 'Public' : 'Private';
+
+    // optional fields
+    this.model = this.editData.model;
+    this.groupBy = this.editData.groupBy;
+    this.aggregation = this.editData.aggregation;
+    this.aggregationField = this.editData.aggregationField;
+  }
+}
+
+
+
+submit() {
+  const dashboard = {
+    id: this.editData?.id,
+    name: this.formData.name,
+    description: this.formData.description,
+    createdBy: 'admin',
+    createdDate: this.editData?.createdDate || new Date().toISOString(),
+    modifiedBy: 'admin',
+    modifiedDate: new Date().toISOString(),
+    isPublic: this.formData.visibility === 'Public',
+    model: this.model,
+    groupBy: this.groupBy,
+    aggregation: this.aggregation,
+    aggregationField: this.aggregationField
+  };
+
+  const request = dashboard.id
+    ? this.dashboardService.updateDashboard(dashboard)
+    : this.dashboardService.addDashboard(dashboard);
+
+  request.subscribe({
+    next: () => {
+      alert('Dashboard saved successfully!');
+      this.router.navigate(['/inventory/manage-dashboard']);
+    },
+    error: err => {
+      console.error('Failed to save dashboard:', err);
+      alert('Failed to save dashboard');
+    }
+  });
+}
