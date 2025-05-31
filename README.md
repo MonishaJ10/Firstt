@@ -2232,3 +2232,38 @@ submit() {
     }
   });
 }
+
+
+<tr *ngFor="let row of tableData">
+  <td *ngFor="let header of tableHeaders">
+    <ng-container [ngSwitch]="header.key">
+
+      <!-- Format createdDate -->
+      <ng-container *ngSwitchCase="'createdDate'">
+        {{ row.createdDate | date: 'short' }}
+      </ng-container>
+
+      <!-- Format modifiedDate -->
+      <ng-container *ngSwitchCase="'modifiedDate'">
+        {{ row.modifiedDate | date: 'short' }}
+      </ng-container>
+
+      <!-- Format isPublic -->
+      <ng-container *ngSwitchCase="'public'">
+        {{ row.public ? 'Yes' : 'No' }}
+      </ng-container>
+
+      <!-- Action buttons -->
+      <ng-container *ngSwitchCase="'action'">
+        <button (click)="editDashboard(row)">Edit</button>
+        <button (click)="deleteDashboard(row.id)">Delete</button>
+      </ng-container>
+
+      <!-- Default text for other fields -->
+      <ng-container *ngSwitchDefault>
+        {{ row[header.key] }}
+      </ng-container>
+
+    </ng-container>
+  </td>
+</tr>
