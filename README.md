@@ -2164,40 +2164,19 @@ select {
 
 
 ___________________________________________________________________________________
-tableHeaders = [
-  { key: 'name', label: 'Name' },
-  { key: 'description', label: 'Description' },
-  { key: 'createdBy', label: 'Created By' },
-  { key: 'createdDate', label: 'Created Date' },
-  { key: 'modifiedBy', label: 'Modified By' },
-  { key: 'modifiedDate', label: 'Modified Date' },
-  { key: 'public', label: 'Public' },
-  { key: 'action', label: 'Action' }
-];
 
 
-
-<thead>
-  <tr>
-    <th *ngFor="let header of tableHeaders">{{ header.label }}</th>
-  </tr>
-</thead>
-<tbody>
-  <tr *ngIf="tableData.length === 0" class="no-data-row">
-    <td [attr.colspan]="tableHeaders.length" class="no-data-cell">No Rows To Show</td>
-  </tr>
-
-  <tr *ngFor="let row of tableData">
-    <td *ngFor="let header of tableHeaders">
-      <!-- Special formatting for date fields -->
-      <ng-container [ngSwitch]="header.key">
-        <span *ngSwitchCase="'createdDate'">{{ row.createdDate | date: 'short' }}</span>
-        <span *ngSwitchCase="'modifiedDate'">{{ row.modifiedDate | date: 'short' }}</span>
-        <span *ngSwitchCase="'public'">{{ row.public ? 'Yes' : 'No' }}</span>
-        <span *ngSwitchDefault>{{ row[header.key] }}</span>
-      </ng-container>
-    </td>
-  </tr>
-</tbody>
-
-
+deleteDashboard(dashboard: any) {
+  if (confirm(`Are you sure you want to delete "${dashboard.name}"?`)) {
+    this.dashboardService.deleteDashboard(dashboard.id).subscribe({
+      next: () => {
+        alert('Dashboard deleted successfully');
+        this.loadDashboards(); // refresh list
+      },
+      error: err => {
+        console.error('Delete failed:', err);
+        alert('Failed to delete dashboard');
+      }
+    });
+  }
+}
